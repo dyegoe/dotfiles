@@ -1,0 +1,19 @@
+[user]
+  name = Dyego Alexandre Eugenio
+  email = dyegoe@gmail.com
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICLRpSPZWF/wWH278qgfO3yIFzkE185xTKLRqzKokrnH
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/opt/1Password/op-ssh-sign"
+
+[commit]
+  gpgsign = true
+
+[pull]
+  rebase = true
+
+[init]
+	defaultBranch = main

@@ -1,0 +1,76 @@
+#!/usr/bin/env zsh
+
+# ##### Completion #####
+autoload -Uz compinit && compinit
+autoload -Uz bashcompinit && bashcompinit
+
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
+zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' menu select=2
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+
+# ##### Keybindings #####
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey -e
+bindkey '^p' history-search-backward         # ctrl + p
+bindkey '^n' history-search-forward          # ctrl + n
+bindkey "^[[A" up-line-or-beginning-search   # up
+bindkey "^[[B" down-line-or-beginning-search # down
+bindkey '\e[H' beginning-of-line             # home
+bindkey '\e[F' end-of-line                   # end
+bindkey '\e[3~' delete-char                  # delete
+bindkey '^[[1;3C' forward-word               # alt + r-arrow
+bindkey '^[[1;3D' backward-word              # alt + l-arrow
+bindkey '^[[1;5C' forward-word               # ctrl + r-arrow
+bindkey '^[[1;5D' backward-word              # ctrl + l-arrow
+
+# ##### History #####
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+
+# ##### Aliases #####
+source $ZDOTDIR/aliases.zsh
+
+# ##### Options #####
+setopt auto_cd
+
+# ##### Plugins #####
+[ -d $ZDOTDIR/plugins/zsh-autosuggestions ] && source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ] && source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# ##### zoxide #####
+command -v zoxide &>/dev/null && eval "$(zoxide init --cmd cd zsh)"
+
+# ##### fzf #####
+command -v fzf &>/dev/null && eval "$(fzf --zsh)"
+_fzf_compgen_path() {
+  fd -H -E ".git" -E .cache -E . "$1"
+}
+_fzf_compgen_dir() {
+  fd -t d -H -E ".git" -E .cache -E . "$1"
+}
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview='eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview="eval 'echo $'{}"                          "$@" ;;
+    ssh)          fzf --preview='dig +short {}'                            "$@" ;;
+    *)            fzf --preview="$FZF_PREVIEW_COMMAND"                     "$@" ;;
+  esac
+}
+
+# ##### oh-my-posh #####
+command -v oh-my-posh &>/dev/null && eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/my.json)"
