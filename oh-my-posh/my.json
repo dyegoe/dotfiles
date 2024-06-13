@@ -26,7 +26,7 @@
             "fetch_status": true,
             "fetch_upstream_icon": true
           },
-          "template": "<p:divider>[</> <p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }} {{if .BranchStatus }}{{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> <p:divider>]</> "
+          "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }} {{if .BranchStatus }}{{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> "
         },
         {
           "type": "aws",
@@ -55,7 +55,7 @@
             "{{ if eq .Code 0}}p:prompt{{ end }}"
           ],
           "background": "transparent",
-          "template": "\ue602"
+          "template": "\uf105"
         }
       ]
     }
@@ -66,23 +66,24 @@
       "{{ if eq .Code 0}}p:prompt{{ end }}"
     ],
     "background": "transparent",
-    "template": "\ue602 "
+    "template": "\uf105 "
   },
   "secondary_prompt": {
+    "foreground": "p:promptSecondary",
     "background": "transparent",
-    "template": "\ue602\ue602 "
+    "template": "\uf101 "
   },
   "palette": {
     "path": "24",
     "pathBright": "33",
-    "git": "136",
-    "gitBright": "142",
+    "git": "142",
+    "gitBright": "154",
     "aws": "208",
     "awsBright": "172",
     "python": "68",
     "pythonBright": "81",
     "prompt": "127",
-    "promptError": "124",
-    "divider": "154"
+    "promptSecondary": "126",
+    "promptError": "124"
   }
 }
