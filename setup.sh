@@ -520,11 +520,15 @@ function setup_gnome_settings() {
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Control><Alt>t'"
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'gnome-terminal'"
 
+  dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'"
+  dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
+
   dconf write /org/gnome/desktop/interface/clock-show-date true
   dconf write /org/gnome/desktop/interface/clock-show-seconds true
   dconf write /org/gnome/desktop/interface/clock-show-weekday true
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/toolbar-icons-size "'small'"
+
   dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'code.desktop', 'slack.desktop', '1password.desktop']"
 }
 
