@@ -23,6 +23,12 @@
 - `reboot`
 - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
 
+Node: The `setup.sh` script is unable to enable the `gnome-extensions` in a single run. To enable the extensions, run the following command:
+
+```bash
+$HOME/dotfiles/setup.sh install_gnome_extensions
+```
+
 ### Setup 1Password
 
 - Open 1Password and sign in

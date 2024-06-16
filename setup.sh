@@ -65,6 +65,7 @@ function install_gnome_extensions() {
     $CURL_CMD -o /tmp/$gnome_extension_zip https://extensions.gnome.org/extension-data/$gnome_extension_zip
     if command -v gnome-extensions >/dev/null 2>&1; then
       gnome-extensions install --force /tmp/$gnome_extension_zip
+      gnome-extensions enable $gnome_extension_id &>/dev/null || true
     fi
   done
 }
@@ -529,29 +530,6 @@ function setup_zsh() {
   if [ ! -L $zshenv_symlink ]; then
     echo_info "  Creating the symlink for .zshenv..."
     ln -s $zshenv_origin $zshenv_symlink
-  fi
-
-  # zprofile
-  local zprofile_symlink=$ZDOTDIR/.zprofile
-  local zprofile_origin=$SCRIPT_DIR/zsh/zprofile
-
-  if [ -f $zprofile_symlink ] && [ ! -L $zprofile_symlink ]; then
-    echo_info "  .zprofile already exists. It is a file, moving it to backup..."
-    mv $zprofile_symlink ${zprofile_symlink}.$(date +%Y%m%d%H%M%S).backup
-  fi
-
-  if [ -L $zprofile_symlink ] && [ "$(readlink $zprofile_symlink)" = "$zprofile_origin" ]; then
-    echo_info "  .zprofile already exists and is a symlink to the correct target."
-  fi
-
-  if [ -L $zprofile_symlink ] && [ ! -e $zprofile_symlink ]; then
-    echo_info "  .zprofile already exists. It is a symlink, but the target does not exist. Removing it..."
-    rm -f $zprofile_symlink
-  fi
-
-  if [ ! -L $zprofile_symlink ]; then
-    echo_info "  Creating the symlink for .zprofile..."
-    ln -s $zprofile_origin $zprofile_symlink
   fi
 
   # zshrc
