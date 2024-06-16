@@ -43,7 +43,7 @@ function install_packages() {
   command -v 1password &>/dev/null || sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
   # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
   sudo dnf -y install \
-    zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen \
+    zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
     google-chrome-stable code 1password 1password-cli \
     podman-docker \
     @virtualization
@@ -511,14 +511,14 @@ function setup_gnome_settings() {
   local profile=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
   dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/visible-name "'Default'"
   dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/use-system-font false
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/font "'Hack Nerd Font 10'"
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-columns "158"
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-rows "77"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/font "'Hack Nerd Font 11'"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-columns "140"
+  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-rows "75"
 
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'Open Terminal'"
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Control><Alt>t'"
-  dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'gnome-terminal'"
+  dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'alacritty'"
 
   dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'"
   dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'"
@@ -529,7 +529,7 @@ function setup_gnome_settings() {
   dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
   dconf write /org/gnome/desktop/interface/toolbar-icons-size "'small'"
 
-  dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'code.desktop', 'slack.desktop', '1password.desktop']"
+  dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'Alacritty.desktop', 'code.desktop', 'slack.desktop', '1password.desktop']"
 }
 
 # ##### Setup podman docker #####
@@ -647,6 +647,36 @@ function setup_oh_my_posh() {
       ln -s $oh_my_posh_origin $oh_my_posh_symlink
     fi
   done
+}
+
+# ##### Setup Alacritty #####
+setup_commands+="setup_alacritty "
+function setup_alacritty() {
+  echo_info "Setup Alacritty..."
+  # alacritty.toml
+  local alacritty_symlink=$XDG_CONFIG_HOME/alacritty/alacritty.toml
+  local alacritty_origin=$SCRIPT_DIR/alacritty/alacritty.toml
+
+  mkdir -p $XDG_CONFIG_HOME/alacritty
+
+  if [ -f $alacritty_symlink ] && [ ! -L $alacritty_symlink ]; then
+    echo_info "  alacritty.toml already exists. It is a file, moving it to backup..."
+    mv $alacritty_symlink ${alacritty_symlink}.$(date +%Y%m%d%H%M%S).backup
+  fi
+
+  if [ -L $alacritty_symlink ] && [ "$(readlink $alacritty_symlink)" = "$alacritty_origin" ]; then
+    echo_info "  alacritty.toml already exists and is a symlink to the correct target."
+  fi
+
+  if [ -L $alacritty_symlink ] && [ ! -e $alacritty_symlink ]; then
+    echo_info "  alacritty.toml already exists. It is a symlink, but the target does not exist. Removing it..."
+    rm -f $alacritty_symlink
+  fi
+
+  if [ ! -L $alacritty_symlink ]; then
+    echo_info "  Creating the symlink for alacritty.toml..."
+    ln -s $alacritty_origin $alacritty_symlink
+  fi
 }
 
 # ##### Setup tmux #####
