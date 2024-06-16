@@ -43,7 +43,7 @@ function install_packages() {
   command -v 1password &>/dev/null || sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
   # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
   sudo dnf -y install \
-    zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen \
+    zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
     google-chrome-stable code 1password 1password-cli \
     podman-docker \
     @virtualization
