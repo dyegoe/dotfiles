@@ -1,0 +1,19 @@
+#!/usr/bin/env zsh
+
+# ##### Enable Gnome extensions #####
+function enable_gnome_extensions() {
+  echo_info "Enable gnome-extensions..."
+  local gnome_version=$(gnome-shell --version | sed -n 's/^GNOME Shell \([0-9]\+\)\..*/\1/p')
+  local gnome_extensions=(
+    "appindicatorsupport@rgcjonas.gmail.com"
+    "gTile@vibou"
+  )
+  for gnome_extension_id in ${gnome_extensions[@]}; do
+    echo_info "Enabling $gnome_extension_id..."
+    if command -v gnome-extensions >/dev/null 2>&1; then
+      gnome-extensions enable $gnome_extension_id
+    fi
+  done
+}
+
+enable_gnome_extensions
