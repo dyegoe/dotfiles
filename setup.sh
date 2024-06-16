@@ -65,7 +65,6 @@ function install_gnome_extensions() {
     $CURL_CMD -o /tmp/$gnome_extension_zip https://extensions.gnome.org/extension-data/$gnome_extension_zip
     if command -v gnome-extensions >/dev/null 2>&1; then
       gnome-extensions install --force /tmp/$gnome_extension_zip
-      gnome-extensions enable $gnome_extension_id || true
     fi
   done
 }
