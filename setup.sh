@@ -25,7 +25,6 @@ install_commands=""
 setup_commands=""
 
 # ##### upgrade system
-install_commands+="upgrade_system "
 function upgrade_system() {
   echo_info "Upgrade system..."
   sudo dnf -y upgrade --refresh
@@ -33,7 +32,6 @@ function upgrade_system() {
 }
 
 # ##### Install packages #####
-install_commands+="install_packages "
 function install_packages() {
   echo_info "Import Visual Studio Code repository..."
   if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
@@ -44,6 +42,7 @@ function install_packages() {
   command -v 1password &>/dev/null || sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
   # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
   sudo dnf -y install \
+    akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo \
     zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
     google-chrome-stable code 1password 1password-cli \
     podman-docker \
@@ -780,6 +779,8 @@ function setup_git() {
 
 # ##### full #####
 function full() {
+  install_packages
+  upgrade_system
   for f in $setup_commands; do
     $f
   done
