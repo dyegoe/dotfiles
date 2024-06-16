@@ -24,9 +24,14 @@
           "background": "transparent",
           "properties": {
             "fetch_status": true,
-            "fetch_upstream_icon": true
+            "fetch_upstream_icon": true,
+            "branch_identical_icon": "\udb84\udecc ",
+            "branch_gone_icon": "\udb80\udd64 ",
+            "branch_ahead_icon": "\udb82\udf7e ",
+            "branch_behind_icon": "\udb82\udf7d ",
+            "branch_icon": "\ue0a0"
           },
-          "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }} {{if .BranchStatus }}{{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> "
+          "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> "
         },
         {
           "type": "aws",
