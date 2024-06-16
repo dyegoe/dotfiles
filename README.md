@@ -14,15 +14,12 @@
 - Start Setup
 - Enable third-party packages
 - Open a terminal
+- If the hardware has an NVIDIA graphic card, install the driver
+  - `sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo`
+  - Wait for the installation to finish. Akmmod will build the driver for the current kernel.
+    - `sudo ps aux |grep akmods |grep -v grep` until the process is finished.
 - `sudo dnf update -y`
 - `sudo dnf autoremove -y`
-- `reboot`
-
-### If the hardware has an NVIDIA graphic card
-
-- Open a terminal
-- `sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo`
-- Wait for the installation to finish. Akmmod will build the driver for the current kernel.
 - `reboot`
 - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
 

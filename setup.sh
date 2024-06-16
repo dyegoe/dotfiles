@@ -20,6 +20,7 @@ function echo_error() {
   echo -e "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m"
 }
 
+# ##### Collect all commands #####
 install_commands=""
 setup_commands=""
 
@@ -108,15 +109,6 @@ function install_zsh_plugins() {
   else
     echo_info "Update zsh-syntax-highlighting..."
     cd $ZDOTDIR/plugins/zsh-syntax-highlighting && git pull
-  fi
-
-  # zsh-completions
-  if [ ! -d $ZDOTDIR/plugins/zsh-completions ]; then
-    echo_info "Install zsh-completions..."
-    git clone https://github.com/zsh-users/zsh-completions.git $ZDOTDIR/plugins/zsh-completions
-  else
-    echo_info "Update zsh-completions..."
-    cd $ZDOTDIR/plugins/zsh-completions && git pull
   fi
 }
 
@@ -478,31 +470,6 @@ function setup_user() {
   sudo usermod -aG libvirt $USER
 }
 
-# ##### Setup sudo #####
-setup_commands+="setup_sudo "
-function setup_sudo() {
-  echo_info "Setup sudo..."
-  sudo cp /etc/sudoers /etc/sudoers.bak
-
-  local sudo_temp_file=$(mktemp)
-  sudo cp /etc/sudoers.bak "$sudo_temp_file"
-
-  sudo sed -i '/^%wheel[[:space:]]\+ALL=(ALL)[[:space:]]\+ALL$/s/^/# /' "$sudo_temp_file"
-  sudo sed -i '/^#([[:space:]]|)%wheel[[:space:]]\+ALL=(ALL)[[:space:]]\+NOPASSWD:[[:space:]]\+ALL$/s/^#//' "$sudo_temp_file"
-
-  sudo visudo -c -f "$sudo_temp_file"
-
-  if [ $? -eq 0 ]; then
-    sudo cp "$sudo_temp_file" /etc/sudoers
-    echo_info "Modifications to /etc/sudoers completed successfully."
-  else
-    echo_error "The modified sudoers file is invalid. Restoring the original file."
-    sudo cp /etc/sudoers.bak /etc/sudoers
-  fi
-
-  rm "$sudo_temp_file"
-}
-
 # ##### Setup Gnome settings #####
 setup_commands+="setup_gnome_settings "
 function setup_gnome_settings() {
@@ -750,16 +717,6 @@ function setup_1password() {
   cp $SCRIPT_DIR/1password/1password.desktop $autostart_path/.
 }
 
-# ##### full #####
-function full() {
-  for f in $install_commands; do
-    $f
-  done
-  for f in $setup_commands; do
-    $f
-  done
-}
-
 # ##### Setup ssh #####
 setup_commands+="setup_ssh "
 function setup_ssh() {
@@ -819,6 +776,16 @@ function setup_git() {
     echo_info "  Creating the symlink for .gitconfig..."
     ln -s $gitconfig_origin $gitconfig_symlink
   fi
+}
+
+# ##### full #####
+function full() {
+  for f in $setup_commands; do
+    $f
+  done
+  for f in $install_commands; do
+    $f
+  done
 }
 
 # ##### help #####
