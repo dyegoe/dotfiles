@@ -14,10 +14,10 @@ mkdir -m 700 -p $ZDOTDIR
 
 # ##### Default log prefix #####
 function echo_info() {
-  echo -e "\e[33m\e[1m[INFO]\e[0m\e[34m $1\e[0m"
+  printf "\e[33m\e[1m[INFO]\e[0m\e[34m $1\e[0m\n"
 }
 function echo_error() {
-  echo -e "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m"
+  printf "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m\n"
 }
 
 # ##### Collect all commands #####

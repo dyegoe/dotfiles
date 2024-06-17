@@ -2,20 +2,19 @@
 TERM = "xterm-256color"
 
 [window]
-decorations = "none"
 opacity = 0.8
 padding.x = 10
 padding.y = 10
 dimensions.columns = 126
-dimensions.lines = 73
+dimensions.lines = 50
 
 [font]
 normal.family = "Hack Nerd Font"
 size = 12
 
 [shell]
-program = "tmux"
-args = ["new-session", "-A", "-s", "main"]
+program = "/usr/bin/env"
+args = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
 
 [scrolling]
 history = 10000
