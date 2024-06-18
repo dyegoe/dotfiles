@@ -65,7 +65,7 @@ function install_packages() {
       akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo \
       zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
       google-chrome-stable code 1password 1password-cli \
-      podman-docker \
+      podman-docker podman-compose docker-compose \
       @virtualization
     return
   fi
