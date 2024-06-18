@@ -26,33 +26,64 @@ setup_commands=""
 
 # ##### upgrade system
 function upgrade_system() {
-  echo_info "Upgrade system..."
-  sudo dnf -y upgrade --refresh
-  sudo dnf -y autoremove
+  # fedora
+  if [ $OS == "fedora" ]; then
+    echo_info "Upgrade system..."
+    sudo dnf -y upgrade --refresh
+    sudo dnf -y autoremove
+    return
+  fi
+  # anything else
+  echo_info "$OS is not supported... System upgrade skipped..."
 }
 
 # ##### Install packages #####
 function install_packages() {
-  echo_info "Import Visual Studio Code repository..."
-  if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
-  fi
   echo_info "Install packages..."
-  command -v 1password &>/dev/null || sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
-  # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
-  sudo dnf --setopt=install_weak_deps=False -y install \
-    akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo \
-    zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
-    google-chrome-stable code 1password 1password-cli \
-    podman-docker \
-    @virtualization
+  # darwin
+  if [ $OS == "darwin" ]; then
+    if [ command -v brew ] &>/dev/null; then
+      echo_info "Install Homebrew..."
+      /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    # because darwin already has zsh, we don't install it
+    brew install \
+      fd bat fzf eza zoxide jq tmux xclip xsel vim pwgen alacritty grep
+    return
+  fi
+
+  # fedora
+  if [ $OS == "fedora" ]; then
+    if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
+      echo_info "  Import Visual Studio Code repository..."
+      sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+      sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+    fi
+    command -v 1password &>/dev/null || sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
+    # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
+    sudo dnf --setopt=install_weak_deps=False -y install \
+      akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo \
+      zsh fd-find bat eza zoxide jq tmux xclip xsel vim pwgen alacritty \
+      google-chrome-stable code 1password 1password-cli \
+      podman-docker \
+      @virtualization
+    return
+  fi
+
+  echo_error "  $OS is not supported... Package installation skipped..."
 }
 
 # ##### Install Gnome extensions #####
 install_commands+="install_gnome_extensions "
 function install_gnome_extensions() {
   echo_info "Install gnome-extensions..."
+  # darwin
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS is not supported... Gnome extensions installation skipped..."
+    return
+  fi
+
+  # anything else
   local gnome_version=$(gnome-shell --version | sed -n 's/^GNOME Shell \([0-9]\+\)\..*/\1/p')
   local gnome_extensions=(
     "appindicatorsupport@rgcjonas.gmail.com"
@@ -73,6 +104,14 @@ function install_gnome_extensions() {
 # ##### Install Fonts #####
 install_commands+="install_fonts "
 function install_fonts() {
+  # darwin
+  if [ $OS == "darwin" ]; then
+    echo_info "Install Hack Nerd font..."
+    brew install --cask font-hack-nerd-font
+    return
+  fi
+
+  # anything else
   local font_dir=$HOME/.local/share/fonts
   if [ ! -d $font_dir ]; then
     echo_info "Creating font dir..."
@@ -132,6 +171,13 @@ function install_oh_my_posh() {
 install_commands+="install_fzf "
 function install_fzf() {
   echo_info "Install fzf..."
+  # darwin
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS installs fzf via brew..."
+    return
+  fi
+
+  # anything else
   local fzf_version=$($CURL_CMD https://api.github.com/repos/junegunn/fzf/releases/latest | jq -r '.tag_name')
   local fzf_local_version=$(command -v fzf &>/dev/null && fzf --version | awk '{print $1}' || echo "0.0.0")
   local fzf_url="https://github.com/junegunn/fzf/releases/download/$fzf_version/fzf-$fzf_version-${OS}_${ARCH}.tar.gz"
@@ -267,9 +313,15 @@ function install_terraform_deps() {
 install_commands+="install_awscli "
 function install_awscli() {
   echo_info "Install awscli2..."
+  if [ $OS == "darwin" ]; then
+    rm -f /tmp/AWSCLIV2.pkg
+    $CURL_CMD -o /tmp/AWSCLIV2.pkg https://awscli.amazonaws.com/AWSCLIV2.pkg
+    sudo installer -pkg /tmp/AWSCLIV2.pkg -target /
+    return
+  fi
   rm -f /tmp/awscliv2.zip
   rm -rf /tmp/aws/
-  $CURL_CMD -o /tmp/awscliv2.zip https://awscli.amazonaws.com/awscli-exe-$OS-$ARCHM.zip
+  $CURL_CMD -o /tmp/awscliv2.zip https://awscli.amazonaws.com/awscli-exe-${OS}-${ARCHM}.zip
   $UNZIP_CMD /tmp /tmp/awscliv2.zip
   sudo /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 }
@@ -349,7 +401,7 @@ function install_k9s() {
   echo_info "Install k9s..."
   local k9s_version=$($CURL_CMD https://api.github.com/repos/derailed/k9s/releases/latest | jq -r '.tag_name')
   local k9s_local_version=$(command -v k9s &>/dev/null && k9s version --short | grep Version | awk '{print $2}' || echo "v0.0.0")
-  local k9s_url="https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_${OS^}_${ARCH}.tar.gz"
+  local k9s_url="https://github.com/derailed/k9s/releases/download/$k9s_version/k9s_${OSS}_${ARCH}.tar.gz"
   if [ "$k9s_version" == "$k9s_local_version" ]; then
     echo_info "  k9s is up to date..."
   else
@@ -463,6 +515,10 @@ function install_awss() {
 # ##### Setup user #####
 setup_commands+="setup_user "
 function setup_user() {
+  if [ $OS == "darwin" ]; then
+    echo_info "$OS doesn't need further User setup..."
+    return
+  fi
   echo_info "Set ZSH as shell for the current user..."
   sudo usermod -s $(which zsh) $USER
   echo_info "Add user to libvirt group..."
@@ -473,6 +529,10 @@ function setup_user() {
 setup_commands+="setup_gnome_settings "
 function setup_gnome_settings() {
   echo_info "Setup Gnome settings..."
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS doesn't need further Gnome setup... Gnome settings setup skipped..."
+    return
+  fi
 
   local profile=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
   dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/visible-name "'Default'"
@@ -502,6 +562,10 @@ function setup_gnome_settings() {
 setup_commands+="setup_podman_docker "
 function setup_podman_docker() {
   echo_info "Setup Podman Docker..."
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS doesn't need further Podman setup... Podman setup skipped..."
+    return
+  fi
   sudo touch /etc/containers/nodocker
 }
 
@@ -518,8 +582,9 @@ function setup_zsh() {
     mv $zshenv_symlink ${zshenv_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $zshenv_symlink ] && [ "$(readlink $zshenv_symlink)" = "$zshenv_origin" ]; then
-    echo_info "  .zshenv already exists and is a symlink to the correct target."
+  if [ -L $zshenv_symlink ] && [ "$(readlink $zshenv_symlink)" != "$zshenv_origin" ]; then
+    echo_info "  .zshenv already exists, but it is a symlink to the wrong target."
+    rm -f $zshenv_symlink
   fi
 
   if [ -L $zshenv_symlink ] && [ ! -e $zshenv_symlink ]; then
@@ -541,8 +606,9 @@ function setup_zsh() {
     mv $zshrc_symlink ${zshrc_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $zshrc_symlink ] && [ "$(readlink $zshrc_symlink)" = "$zshrc_origin" ]; then
-    echo_info "  .zshrc already exists and is a symlink to the correct target."
+  if [ -L $zshrc_symlink ] && [ "$(readlink $zshrc_symlink)" != "$zshrc_origin" ]; then
+    echo_info "  .zshrc already exists, but it is a symlink to the wrong target."
+    rm -f $zshrc_symlink
   fi
 
   if [ -L $zshrc_symlink ] && [ ! -e $zshrc_symlink ]; then
@@ -564,8 +630,9 @@ function setup_zsh() {
     mv $aliases_symlink ${aliases_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $aliases_symlink ] && [ "$(readlink $aliases_symlink)" = "$aliases_origin" ]; then
-    echo_info "  aliases.zsh already exists and is a symlink to the correct target."
+  if [ -L $aliases_symlink ] && [ "$(readlink $aliases_symlink)" != "$aliases_origin" ]; then
+    echo_info "  aliases.zsh already exists, but it is a symlink to the wrong target."
+    rm -f $aliases_symlink
   fi
 
   if [ -L $aliases_symlink ] && [ ! -e $aliases_symlink ]; then
@@ -599,8 +666,9 @@ function setup_oh_my_posh() {
       mv $oh_my_posh_symlink ${oh_my_posh_symlink}.$(date +%Y%m%d%H%M%S).backup
     fi
 
-    if [ -L $oh_my_posh_symlink ] && [ "$(readlink $oh_my_posh_symlink)" = "$oh_my_posh_origin" ]; then
-      echo_info "  $template already exists and is a symlink to the correct target."
+    if [ -L $oh_my_posh_symlink ] && [ "$(readlink $oh_my_posh_symlink)" != "$oh_my_posh_origin" ]; then
+      echo_info "  $template already exists, but it is a symlink to the wrong target."
+      rm -f $oh_my_posh_symlink
     fi
 
     if [ -L $oh_my_posh_symlink ] && [ ! -e $oh_my_posh_symlink ]; then
@@ -621,7 +689,7 @@ function setup_alacritty() {
   echo_info "Setup Alacritty..."
   # alacritty.toml
   local alacritty_symlink=$XDG_CONFIG_HOME/alacritty/alacritty.toml
-  local alacritty_origin=$SCRIPT_DIR/alacritty/alacritty.toml
+  local alacritty_origin=$SCRIPT_DIR/alacritty/alacritty-${OS}.toml
 
   mkdir -p $XDG_CONFIG_HOME/alacritty
 
@@ -630,8 +698,9 @@ function setup_alacritty() {
     mv $alacritty_symlink ${alacritty_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $alacritty_symlink ] && [ "$(readlink $alacritty_symlink)" = "$alacritty_origin" ]; then
-    echo_info "  alacritty.toml already exists and is a symlink to the correct target."
+  if [ -L $alacritty_symlink ] && [ "$(readlink $alacritty_symlink)" != "$alacritty_origin" ]; then
+    echo_info "  alacritty.toml already exists, but it is a symlink to the wrong target."
+    rm -f $alacritty_symlink
   fi
 
   if [ -L $alacritty_symlink ] && [ ! -e $alacritty_symlink ]; then
@@ -660,8 +729,9 @@ function setup_tmux() {
     mv $tmux_conf_symlink ${tmux_conf_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $tmux_conf_symlink ] && [ "$(readlink $tmux_conf_symlink)" = "$tmux_conf_origin" ]; then
-    echo_info "  tmux.conf already exists and is a symlink to the correct target."
+  if [ -L $tmux_conf_symlink ] && [ "$(readlink $tmux_conf_symlink)" != "$tmux_conf_origin" ]; then
+    echo_info "  tmux.conf already exists, but it is a symlink to the wrong target."
+    rm -f $tmux_conf_symlink
   fi
 
   if [ -L $tmux_conf_symlink ] && [ ! -e $tmux_conf_symlink ]; then
@@ -680,20 +750,21 @@ setup_commands+="setup_vim "
 function setup_vim() {
   echo_info "Setup Vim..."
   # vimrc
-  local vimrc_symlink=$XDG_CONFIG_HOME/vim/vimrc
+  local vimrc_symlink=$VIM_HOME/vimrc
   local vimrc_origin=$SCRIPT_DIR/vim/vimrc
 
-  mkdir -p $XDG_CONFIG_HOME/vim
+  mkdir -p $VIM_HOME
   # check vimrc -> set undodir
-  mkdir -p $XDG_CONFIG_HOME/vim/undo
+  mkdir -p $VIM_HOME/undo
 
   if [ -f $vimrc_symlink ] && [ ! -L $vimrc_symlink ]; then
     echo_info "  .vimrc already exists. It is a file, moving it to backup..."
     mv $vimrc_symlink ${vimrc_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $vimrc_symlink ] && [ "$(readlink $vimrc_symlink)" = "$vimrc_origin" ]; then
-    echo_info "  .vimrc already exists and is a symlink to the correct target."
+  if [ -L $vimrc_symlink ] && [ "$(readlink $vimrc_symlink)" != "$vimrc_origin" ]; then
+    echo_info "  .vimrc already exists, but it is a symlink to the wrong target."
+    rm -f $vimrc_symlink
   fi
 
   if [ -L $vimrc_symlink ] && [ ! -e $vimrc_symlink ]; then
@@ -710,6 +781,10 @@ function setup_vim() {
 # ##### Setup 1Password #####
 setup_commands+="setup_1password "
 function setup_1password() {
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS doesn't need further 1Password setup... 1Password setup skipped..."
+    return
+  fi
   echo_info "Setup 1Password..."
   local autostart_path=$XDG_CONFIG_HOME/autostart
   mkdir -p $autostart_path
@@ -721,7 +796,7 @@ setup_commands+="setup_ssh "
 function setup_ssh() {
   echo_info "Setup SSH..."
   local ssh_dir=$HOME/.ssh
-  local ssh_config=$ssh_dir/config
+  local ssh_config_symlink=$ssh_dir/config
   local ssh_config_origin=$SCRIPT_DIR/ssh/config.$OS
 
   if [ ! -d $ssh_dir ]; then
@@ -730,23 +805,24 @@ function setup_ssh() {
     chmod 700 $ssh_dir
   fi
 
-  if [ -f $ssh_config ] && [ ! -L $ssh_config ]; then
-    echo_info "  config already exists. It is a file, moving it to backup..."
-    mv $ssh_config ${ssh_config}.$(date +%Y%m%d%H%M%S).backup
+  if [ -f $ssh_config_symlink ] && [ ! -L $ssh_config_symlink ]; then
+    echo_info "  ssh config already exists. It is a file, moving it to backup..."
+    mv $ssh_config_symlink ${ssh_config_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $ssh_config ] && [ "$(readlink $ssh_config)" = "$ssh_config_origin" ]; then
-    echo_info "  config already exists and is a symlink to the correct target."
+  if [ -L $ssh_config_symlink ] && [ "$(readlink $ssh_config_symlink)" != "$ssh_config_origin" ]; then
+    echo_info "  ssh config already exists, but it is a symlink to the wrong target."
+    rm -f $ssh_config_symlink
   fi
 
-  if [ -L $ssh_config ] && [ ! -e $ssh_config ]; then
-    echo_info "  config already exists. It is a symlink, but the target does not exist. Removing it..."
-    rm -f $ssh_config
+  if [ -L $ssh_config_symlink ] && [ ! -e $ssh_config_symlink ]; then
+    echo_info "  ssh config already exists. It is a symlink, but the target does not exist. Removing it..."
+    rm -f $ssh_config_symlink
   fi
 
-  if [ ! -L $ssh_config ]; then
+  if [ ! -L $ssh_config_symlink ]; then
     echo_info "  Creating the symlink for config..."
-    ln -s $ssh_config_origin $ssh_config
+    ln -s $ssh_config_origin $ssh_config_symlink
   fi
 }
 
@@ -754,6 +830,10 @@ function setup_ssh() {
 setup_commands+="setup_git "
 function setup_git() {
   echo_info "Setup Git..."
+  if [ $OS == "darwin" ]; then
+    echo_info "  $OS doesn't need further Git setup... Git setup skipped..."
+    return
+  fi
   local gitconfig_symlink=$HOME/.gitconfig
   local gitconfig_origin=$SCRIPT_DIR/git/gitconfig.$OS
 
@@ -762,8 +842,9 @@ function setup_git() {
     mv $gitconfig_symlink ${gitconfig_symlink}.$(date +%Y%m%d%H%M%S).backup
   fi
 
-  if [ -L $gitconfig_symlink ] && [ "$(readlink $gitconfig_symlink)" = "$gitconfig_origin" ]; then
-    echo_info "  .gitconfig already exists and is a symlink to the correct target."
+  if [ -L $gitconfig_symlink ] && [ "$(readlink $gitconfig_symlink)" != "$gitconfig_origin" ]; then
+    echo_info "  .gitconfig already exists, but it is a symlink to the wrong target."
+    rm -f $gitconfig_symlink
   fi
 
   if [ -L $gitconfig_symlink ] && [ ! -e $gitconfig_symlink ]; then

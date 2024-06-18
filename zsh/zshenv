@@ -5,6 +5,7 @@ export TERM='rxvt-256color'
 
 # ##### Set OS / Distro #####
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+OSS=$(uname -s)
 DISTRO=unknow
 ARCH=amd64
 ARCHM=$(uname -m)
@@ -29,9 +30,9 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
-export XDG_RUNTIME_DIR="/run/user/$UID"
-export XDG_DATA_DIRS="/usr/local/share:/usr/share"
-export XDG_CONFIG_DIRS="/etc/xdg"
+# export XDG_RUNTIME_DIR="/run/user/$UID" # This one was causing issues on macos and 1Password cli
+# export XDG_DATA_DIRS="/usr/local/share:/usr/share"
+# export XDG_CONFIG_DIRS="/etc/xdg"
 
 # ##### Local Bin #####
 export LOCAL_BIN="$HOME/.local/bin"
@@ -50,7 +51,7 @@ export SAVEHIST=$HISTSIZE
 export HISTDUP=erase
 
 # ##### Libvirt #####
-if [ "${DISTRO}" = "fedora" ]; then
+if [[ $OS == "fedora" ]]; then
   export LIBVIRT_DEFAULT_URI="qemu:///system"
 fi
 
@@ -61,9 +62,17 @@ export AWS_PAGER=
 export TMUX_PLUGIN_MANAGER_PATH="$XDG_CONFIG_HOME/tmux/plugins"
 
 # ##### Vim #####
-export VIM_PACK="$XDG_CONFIG_HOME/vim/pack"
-export VIM_THEMES="$VIM_PACK/themes/start"
-export VIM_PLUGINS="$VIM_PACK/plugins/start"
+if [[ $OS == "darwin" ]]; then
+  export VIM_HOME="$HOME/.vim"
+  export VIM_PACK="$VIM_HOME/pack"
+  export VIM_THEMES="$VIM_PACK/themes/start"
+  export VIM_PLUGINS="$VIM_PACK/plugins/start"
+else
+  export VIM_HOME="$XDG_CONFIG_HOME/vim"
+  export VIM_PACK="$XDG_CONFIG_HOME/vim/pack"
+  export VIM_THEMES="$VIM_PACK/themes/start"
+  export VIM_PLUGINS="$VIM_PACK/plugins/start"
+fi
 
 # ##### Bat #####
 export BAT_THEME="Visual Studio Dark+"
@@ -91,7 +100,7 @@ export GOROOT="/usr/local/go"
 export GOPATH="$XDG_CONFIG_HOME/go"
 
 # ##### 1Password #####
-if [ "${OS}" = "darwin" ]; then
+if [[ $OS == "darwin" ]]; then
   export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 fi
 
