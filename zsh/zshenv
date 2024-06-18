@@ -82,9 +82,9 @@ export FZF_DEFAULT_OPTS='
   --bind="ctrl-/:change-preview-window(hidden|)"
   --prompt="> " --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
   --layout="reverse" --height="50%" --info="right" --multi --tmux=center,80%,50%'
-export FZF_PREVIEW_COMMAND='[[ $(file --mime {}) =~ directory ]] && eza --tree --color=always --icons {} || ([[ $(file --mime {}) =~ binary ]] && echo {} is binary file || bat -n --color=always -r :500 {})'
+export FZF_PREVIEW_COMMAND='[[ $(file --mime {}) =~ directory ]] && eza --tree --level 1 --color=always --icons {} || ([[ $(file --mime {}) =~ binary ]] && echo {} is binary file || bat -n --color=always -r :500 {})'
 export FZF_CTRL_T_OPTS="--preview='$FZF_PREVIEW_COMMAND'"
-export FZF_ALT_C_OPTS="--preview='eza --tree --color=always --icons {} | head -n 200'"
+export FZF_ALT_C_OPTS="--preview='eza --tree --level 1 --color=always --icons {} | head -n 200'"
 
 # ##### Go #####
 export GOROOT="/usr/local/go"
