@@ -53,7 +53,7 @@ function install_packages() {
   fi
 
   # fedora
-  if [ $OS == "fedora" ]; then
+  if [ $DISTRO == "fedora" ]; then
     if [ ! -f /etc/yum.repos.d/vscode.repo ]; then
       echo_info "  Import Visual Studio Code repository..."
       sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
@@ -70,7 +70,7 @@ function install_packages() {
     return
   fi
 
-  echo_error "  $OS is not supported... Package installation skipped..."
+  echo_error "  $OS/$DISTRO is not supported... Package installation skipped..."
 }
 
 # ##### Install Gnome extensions #####
