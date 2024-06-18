@@ -3,7 +3,7 @@
 # ##### General #####
 
 alias ll='eza --icons=always --git -lah'
-alias ls='eza --icons'
+alias ls='eza --icons --git'
 
 # ##### Bat #####
 alias cat='bat -p'
