@@ -27,14 +27,14 @@ setup_commands=""
 # ##### upgrade system
 function upgrade_system() {
   # fedora
-  if [ $OS == "fedora" ]; then
+  if [ $DISTRO == "fedora" ]; then
     echo_info "Upgrade system..."
     sudo dnf -y upgrade --refresh
     sudo dnf -y autoremove
     return
   fi
   # anything else
-  echo_info "$OS is not supported... System upgrade skipped..."
+  echo_info "$OS/$DISTRO is not supported... System upgrade skipped..."
 }
 
 # ##### Install packages #####
