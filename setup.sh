@@ -750,7 +750,7 @@ function setup_tmux() {
 setup_commands+="setup_vim "
 function setup_vim() {
   log_info "Setup Vim..."
-  # vimrc
+  # tgswitch
   local vimrc_symlink=$VIM_HOME/vimrc
   local vimrc_origin=$SCRIPT_DIR/vim/vimrc
 
@@ -776,6 +776,35 @@ function setup_vim() {
   if [[ ! -L $vimrc_symlink ]]; then
     log_info "  Creating the symlink for .vimrc..."
     ln -s $vimrc_origin $vimrc_symlink
+  fi
+}
+
+# ##### Setup tgswitch #####
+setup_commands+="setup_tgswitch "
+function setup_tgswitch() {
+  log_info "Setup tgswitch..."
+  # .tgswitch.toml
+  local tgswitch_symlink=$HOME/.tgswitch.toml
+  local tgswitch_origin=$SCRIPT_DIR/tgswitch/tgswitch.$OS.toml
+
+  if [[ -f $tgswitch_symlink ]] && [[ ! -L $tgswitch_symlink ]]; then
+    log_info "  .tgswitch already exists. It is a file, moving it to backup..."
+    mv $tgswitch_symlink ${tgswitch_symlink}.$(date +%Y%m%d%H%M%S).backup
+  fi
+
+  if [[ -L $tgswitch_symlink ]] && [[ "$(readlink $tgswitch_symlink)" != "$tgswitch_origin" ]]; then
+    log_info "  .tgswitch already exists, but it is a symlink to the wrong target."
+    rm -f $tgswitch_symlink
+  fi
+
+  if [[ -L $tgswitch_symlink ]] && [[ ! -e $tgswitch_symlink ]]; then
+    log_info "  .tgswitch already exists. It is a symlink, but the target does not exist. Removing it..."
+    rm -f $tgswitch_symlink
+  fi
+
+  if [[ ! -L $tgswitch_symlink ]]; then
+    log_info "  Creating the symlink for .tgswitch..."
+    ln -s $tgswitch_origin $tgswitch_symlink
   fi
 }
 
