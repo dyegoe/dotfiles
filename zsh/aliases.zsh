@@ -132,7 +132,7 @@ function _export_cred_proxmox() {
     print "Proxmox credentials not found in 1Password"
     return 1
   fi
-  export TF_VAR_proxmox_user="${proxmox_user}@pve" TF_VAR_proxmox_password=$proxmox_password
+  export TF_VAR_proxmox_user="${proxmox_user}@pam" TF_VAR_proxmox_password=$proxmox_password
   return 0
 }
 # export ssh public key
