@@ -208,3 +208,38 @@ function export_cred_aws() {
     log_info "AWS credentials exported"
   return 0
 }
+
+# ##### Python #####
+alias pyvenv='python_venv'
+function python_venv() {
+  local python_venv_root=$XDG_CONFIG_HOME/python/venv
+  local python_cmd
+  local python_venv_name=$1
+  local python_venv_path=$python_venv_root/$python_venv_name
+  if command -v python3 &>/dev/null; then
+    python_cmd=$(command -v python3)
+  elif command -v python &>/dev/null; then
+    python_cmd=$(command -v python)
+  else
+    log_error "Python not found"
+    return 1
+  fi
+  if [[ -z "$1" ]]; then
+    log_error "Please provide a name for the virtual environment"
+    return 1
+  fi
+  if [[ ! -d "$python_venv_path" ]]; then
+    log_info "Creating virtual environment $python_venv_name"
+    $python_cmd -m venv $python_venv_path &&
+      log_info "Virtual environment $python_venv_name created" ||
+      log_error "Failed to create virtual environment $python_venv_name"
+  fi
+  if [[ ! -f "$python_venv_path/bin/activate" ]]; then
+    log_error "Virtual environment $python_venv_name not created"
+    return 1
+  fi
+  log_info "Activating virtual environment $python_venv_name"
+  source $python_venv_path/bin/activate &&
+    log_info "Virtual environment $python_venv_name activated" ||
+    log_error "Failed to activate virtual environment $python_venv_name"
+}
