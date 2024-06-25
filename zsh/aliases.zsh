@@ -27,9 +27,8 @@ function git_current_branch() {
   fi
   printf ${ref#refs/heads/\n}
 }
-alias git_check_repos='_git_check_repos'
-alias gcr='_git_check_repos'
-function _git_check_repos() {
+alias gcr='git_check_repos'
+function git_check_repos() {
   local current_dir=$(pwd)
   for i in $(find . -name .git -type d -not -iwholename '*.terraform*'); do
     local folder=${i:A:h}
@@ -71,8 +70,8 @@ function _check_1password() {
 }
 
 # ##### Export credentials #####
-alias ec='_export_cred'
-function _export_cred() {
+alias ec='export_cred'
+function export_cred() {
   if [[ "$1" == "help" ]]; then
     printf "Usage: ec <service>\n"
     printf "\n"
@@ -86,23 +85,23 @@ function _export_cred() {
     return 1
   fi
   if [[ "$1" == "all" ]]; then
-    _export_cred_gitlab
-    _export_cred_cloudflare
-    _export_cred_proxmox
-    _export_cred_ssh
-    _export_cred_vault
+    export_cred_gitlab
+    export_cred_cloudflare
+    export_cred_proxmox
+    export_cred_ssh
+    export_cred_vault
     return 0
   fi
   local service=$1
-  if ! command -v "_export_cred_$service" &>/dev/null; then
+  if ! command -v "export_cred_$service" &>/dev/null; then
     log_error "Service $service not found"
     return 1
   fi
-  "_export_cred_$service" ${@:2}
+  "export_cred_$service" ${@:2}
 }
 # export gitlab credentials
-alias ecgitlab='_export_cred_gitlab'
-function _export_cred_gitlab() {
+alias ecgitlab='export_cred_gitlab'
+function export_cred_gitlab() {
   if ! _check_1password; then
     return 1
   fi
@@ -117,8 +116,8 @@ function _export_cred_gitlab() {
   return 0
 }
 # export cloudflare credentials
-alias eccloudflare='_export_cred_cloudflare'
-function _export_cred_cloudflare() {
+alias eccloudflare='export_cred_cloudflare'
+function export_cred_cloudflare() {
   if ! _check_1password; then
     return 1
   fi
@@ -133,8 +132,8 @@ function _export_cred_cloudflare() {
   return 0
 }
 # export proxmox credentials
-alias ecproxmox='_export_cred_proxmox'
-function _export_cred_proxmox() {
+alias ecproxmox='export_cred_proxmox'
+function export_cred_proxmox() {
   if ! _check_1password; then
     return 1
   fi
@@ -149,8 +148,8 @@ function _export_cred_proxmox() {
   return 0
 }
 # export ssh public key
-alias ecssh='_export_cred_ssh'
-function _export_cred_ssh() {
+alias ecssh='export_cred_ssh'
+function export_cred_ssh() {
   if ! _check_1password; then
     return 1
   fi
@@ -164,8 +163,8 @@ function _export_cred_ssh() {
   return 0
 }
 # export vault credentials
-alias ecvault='_export_cred_vault'
-function _export_cred_vault() {
+alias ecvault='export_cred_vault'
+function export_cred_vault() {
   if ! _check_1password; then
     return 1
   fi
@@ -180,8 +179,8 @@ function _export_cred_vault() {
   return 0
 }
 # export aws credentials
-alias ecaws='_export_cred_aws'
-function _export_cred_aws() {
+alias ecaws='export_cred_aws'
+function export_cred_aws() {
   if [[ "$1" == "help" || -z "$1" ]]; then
     printf "Usage: ecaws <string> <region>\n"
     printf "\n"
