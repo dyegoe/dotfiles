@@ -4,12 +4,14 @@
 autoload -Uz compinit && compinit
 autoload -Uz bashcompinit && bashcompinit
 
+command -v aws_completer &>/dev/null && complete -C aws_completer aws
+
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
 zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' menu select=2
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 
 # ##### Keybindings #####
@@ -46,8 +48,9 @@ source $ZDOTDIR/aliases.zsh
 setopt auto_cd
 
 # ##### Plugins #####
-[ -d $ZDOTDIR/plugins/zsh-autosuggestions ] && source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ] && source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+[[ -d $ZDOTDIR/plugins/fzf-tab-completion ]] && source $ZDOTDIR/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+[[ -d $ZDOTDIR/plugins/zsh-autosuggestions ]] && source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ]] && source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ##### zoxide #####
 command -v zoxide &>/dev/null && eval "$(zoxide init --cmd cd zsh)"
@@ -65,10 +68,10 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview='eza --tree --color=always {} | head -200' "$@" ;;
-    export|unset) fzf --preview="eval 'echo $'{}"                          "$@" ;;
-    ssh)          fzf --preview='dig +short {}'                            "$@" ;;
-    *)            fzf --preview="$FZF_PREVIEW_COMMAND"                     "$@" ;;
+    cd)           fzf --preview='eza --tree --level 1 --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview="eval 'echo $'{}"                                    "$@" ;;
+    ssh)          fzf --preview='dig +short {}'                                      "$@" ;;
+    *)            fzf --preview="$FZF_PREVIEW_COMMAND"                               "$@" ;;
   esac
 }
 

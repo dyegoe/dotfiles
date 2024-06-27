@@ -95,4 +95,13 @@ function install_zsh_plugins() {
     log_info "Update zsh-syntax-highlighting..."
     cd $ZDOTDIR/plugins/zsh-syntax-highlighting && git pull
   fi
+
+  # fzf-tab-completion
+  if [[ ! -d $ZDOTDIR/plugins/fzf-tab-completion ]]; then
+    log_info "Install fzf-tab-completion..."
+    git clone https://github.com/lincheney/fzf-tab-completion $ZDOTDIR/plugins/fzf-tab-completion
+  else
+    log_info "Update fzf-tab-completion..."
+    cd $ZDOTDIR/plugins/fzf-tab-completion && git pull
+  fi
 }
