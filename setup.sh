@@ -47,8 +47,9 @@ function install_packages() {
       /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
     # because darwin already has zsh, we don't install it
+    log_info "  Installing packages using brew..."
     brew install \
-      fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty grep
+      fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty grep gawk gnu-sed coreutils
     return
   fi
 
@@ -64,6 +65,7 @@ function install_packages() {
       sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
     fi
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
+    log_info "  Installing packages using dnf..."
     sudo dnf --setopt=install_weak_deps=False -y install \
       akmod-nvidia xorg-x11-drv-nvidia-cuda nvidia-vaapi-driver libva-utils vdpauinfo \
       zsh fd-find bat eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
