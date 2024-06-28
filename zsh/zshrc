@@ -13,6 +13,7 @@ zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion::*:ls::*' fzf-completion-opts --preview='eval head {1} --tmux bottom'
 
 # ##### Keybindings #####
 autoload -U up-line-or-beginning-search
@@ -58,10 +59,10 @@ command -v zoxide &>/dev/null && eval "$(zoxide init --cmd cd zsh)"
 # ##### fzf #####
 command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 _fzf_compgen_path() {
-  fd -H -E ".git" -E .cache -E . "$1"
+  fd -H -E .git -E .cache -E . -E .config "$1"
 }
 _fzf_compgen_dir() {
-  fd -t d -H -E ".git" -E .cache -E . "$1"
+  fd -H -E .git -E .cache -E . -E .config -t d "$1"
 }
 _fzf_comprun() {
   local command=$1

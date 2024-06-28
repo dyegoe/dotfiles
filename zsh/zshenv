@@ -10,16 +10,16 @@ DISTRO=unknow
 ARCH=amd64
 ARCHM=$(uname -m)
 
-if [ "${OS}" = "linux" ]; then
-  if [ -f /etc/os-release ]; then
+if [[ "${OS}" = "linux" ]]; then
+  if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     DISTRO=$ID
   else
-    if [ -f /etc/gentoo-release ]; then
+    if [[ -f /etc/gentoo-release ]]; then
       DISTRO="gentoo"
     fi
 
-    if [ -f /etc/SuSE-release ]; then
+    if [[ -f /etc/SuSE-release ]]; then
       DISTRO="suse"
     fi
   fi
@@ -78,19 +78,19 @@ fi
 export BAT_THEME="Visual Studio Dark+"
 
 # ##### FZF #####
-export FZF_DEFAULT_COMMAND='fd -H -E .git -E .cache'
+export FZF_DEFAULT_COMMAND='fd -E .git -E .cache -E .config -E .'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd -t d -H -E .git -E .cache'
+export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND -t d"
 export FZF_DEFAULT_OPTS='
   --color=fg:-1,fg+:#d0d0d0,bg:-1,bg+:#262626
   --color=hl:#5f87af,hl+:#5fd7ff,info:#afaf87,marker:#87ff00
   --color=prompt:#d7005f,spinner:#af5fff,pointer:#af5fff,header:#87afaf
   --color=border:#262626,label:#aeaeae,query:#d9d9d9
   --border="bold" --border-label=""
-  --preview-window="border-rounded,down:70%:wrap"
+  --preview-window="border-rounded,down:65%:wrap"
   --bind="ctrl-/:change-preview-window(hidden|)"
   --prompt="> " --marker=">" --pointer="◆" --separator="─" --scrollbar="│"
-  --layout="reverse" --height="50%" --info="right" --multi --tmux=center,80%,50%'
+  --layout="reverse" --height="80%" --info="right" --multi --tmux=center,15%,10%'
 export FZF_PREVIEW_COMMAND='[[ $(file --mime {}) =~ directory ]] && eza --tree --level 1 --color=always --icons {} || ([[ $(file --mime {}) =~ binary ]] && echo {} is binary file || bat -n --color=always -r :500 {})'
 export FZF_CTRL_T_OPTS="--preview='$FZF_PREVIEW_COMMAND'"
 export FZF_ALT_C_OPTS="--preview='eza --tree --level 1 --color=always --icons {} | head -n 200'"
