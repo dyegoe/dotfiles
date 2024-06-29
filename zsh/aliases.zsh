@@ -181,13 +181,14 @@ function export_cred_vault() {
 # export aws credentials
 alias ecaws='export_cred_aws'
 function export_cred_aws() {
-  if [[ "$1" == "help" || -z "$1" ]]; then
-    printf "Usage: ecaws <string> <region>\n"
+  if [[ "$1" == "help" || -z "$1" || ! "$2" =~ '^[a-z]{2}-[a-z]+-[0-9]+$' ]]; then
+    printf "Usage: ecaws <string> <aws region>\n"
     printf "\n"
     printf "This command will search for an AWS Access Key in 1Password and export the credentials.\n"
     printf "A string is required and it will be added to 'AWS Access Key <string>' to search for the item.\n"
     printf "\n"
     printf "Example: ecaws my-aws-key eu-central-1\n"
+    printf "\n"
     printf "This will search for 'AWS Access Key my-aws-key' in 1Password.\n"
     printf "The items should have the fields 'access key id' and 'secret access key'.\n"
     printf "Make sure that you have the 1Password CLI installed and configured.\n"
@@ -197,7 +198,7 @@ function export_cred_aws() {
     return 1
   fi
   local aws_op_item="AWS Access Key $1"
-  [[ "$2" =~ ^[a-z]{2}-[a-z]+-[0-9]+$ ]] && local aws_default_region=$2
+  local aws_default_region=$2
   local aws_access_key_id=$(op item get $aws_op_item --fields 'access key id')
   local aws_secret_access_key=$(op item get $aws_op_item --fields 'secret access key')
   if [[ -z "$aws_access_key_id" || -z "$aws_secret_access_key" ]]; then
