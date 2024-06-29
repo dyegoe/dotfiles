@@ -49,7 +49,9 @@ function install_packages() {
     # because darwin already has zsh, we don't install it
     log_info "  Installing packages using brew..."
     brew install \
-      fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty grep gawk gnu-sed coreutils
+      fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
+      grep gawk gnu-sed coreutils \
+      ansible
     return
   fi
 
@@ -71,7 +73,7 @@ function install_packages() {
       zsh fd-find bat eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
-      @virtualization
+      ansible @virtualization
     return
   fi
 
