@@ -61,7 +61,7 @@ alias gr='git restore'
 alias grs='git restore --staged'
 
 # ##### 1Password #####
-function _check_1password() {
+function _check_op() {
   if ! command -v op &>/dev/null; then
     log_error "1Password CLI is not installed"
     return 1
@@ -102,7 +102,7 @@ function export_cred() {
 # export gitlab credentials
 alias ecgitlab='export_cred_gitlab'
 function export_cred_gitlab() {
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local gitlab_user=$(op item get ijy23npdfhkrjc54ntffjekr5a --fields username)
@@ -118,7 +118,7 @@ function export_cred_gitlab() {
 # export cloudflare credentials
 alias eccloudflare='export_cred_cloudflare'
 function export_cred_cloudflare() {
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local cloudflare_account_id=$(op item get neo3orqoubdi5ilhx4yauzgww4 --fields 'account ID')
@@ -134,7 +134,7 @@ function export_cred_cloudflare() {
 # export proxmox credentials
 alias ecproxmox='export_cred_proxmox'
 function export_cred_proxmox() {
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local proxmox_user=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields username)
@@ -150,7 +150,7 @@ function export_cred_proxmox() {
 # export ssh public key
 alias ecssh='export_cred_ssh'
 function export_cred_ssh() {
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local ssh_public_key=$(op item get josurj44uxonxdvlk5mgk7hcvy --fields 'public key')
@@ -165,7 +165,7 @@ function export_cred_ssh() {
 # export vault credentials
 alias ecvault='export_cred_vault'
 function export_cred_vault() {
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local vault_addr=$(op item get sjohltwhbvcdin62uranbih3ay --fields hostname)
@@ -194,7 +194,7 @@ function export_cred_aws() {
     printf "Make sure that you have the 1Password CLI installed and configured.\n"
     return 0
   fi
-  if ! _check_1password; then
+  if ! _check_op; then
     return 1
   fi
   local aws_op_item="AWS Access Key $1"
