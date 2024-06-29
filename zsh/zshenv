@@ -51,7 +51,7 @@ export SAVEHIST=$HISTSIZE
 export HISTDUP=erase
 
 # ##### Libvirt #####
-if [[ $OS == "fedora" ]]; then
+if [[ $DISTRO == "fedora" ]]; then
   export LIBVIRT_DEFAULT_URI="qemu:///system"
 fi
 
