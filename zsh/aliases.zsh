@@ -8,7 +8,7 @@ function log_error() {
   printf "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m\n"
 }
 
-# ##### General #####
+# ##### Eza #####
 alias ll='eza --icons=always --git -lah'
 alias ls='eza --icons --git'
 
@@ -60,6 +60,24 @@ alias gsb='git status --short --branch'
 alias gr='git restore'
 alias grs='git restore --staged'
 
+# ##### fzf #####
+function _check_fzf() {
+  if ! command -v fzf &>/dev/null; then
+    log_error "FZF is not installed"
+    return 1
+  fi
+  return 0
+}
+
+# ##### jq #####
+function _check_jq() {
+  if ! command -v jq &>/dev/null; then
+    log_error "jq is not installed"
+    return 1
+  fi
+  return 0
+}
+
 # ##### 1Password #####
 function _check_op() {
   if ! command -v op &>/dev/null; then
@@ -67,6 +85,48 @@ function _check_op() {
     return 1
   fi
   return 0
+}
+alias oph='op_helper'
+function op_helper() {
+  if ! _check_op; then
+    return 1
+  fi
+  if ! _check_fzf; then
+    return 1
+  fi
+  if ! _check_jq; then
+    return 1
+  fi
+  local op_items=$(op item list --format json | jq -r '.[] | "\(.title) [\(.additional_information)] (\(.id))"')
+  if [[ -z "$op_items" ]]; then
+    log_error "No items found in 1Password"
+    return 1
+  fi
+  if [[ ! -z "$1" ]]; then
+    local op_item_id=$(printf $op_items | fzf --query $1 | sed 's/.*(\([a-z1-9]*\))/\1/')
+  else
+    local op_item_id=$(printf $op_items | fzf | sed 's/.*(\([a-z1-9]*\))/\1/')
+  fi
+  if [[ -z "$op_item_id" ]]; then
+    log_error "No item selected"
+    return 1
+  fi
+  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[].id')
+  if [[ -z "$op_item_fields" ]]; then
+    log_error "No fields found in 1Password item"
+    return 1
+  fi
+  local op_item_field=$(echo $op_item_fields | fzf)
+  if [[ -z "$op_item_field" ]]; then
+    log_error "No field selected"
+    return 1
+  fi
+  local op_item_field_value=$(op item get $op_item_id --fields $op_item_field)
+  if [[ -z "$op_item_field_value" ]]; then
+    log_error "No value found for field $op_item_field"
+    return 1
+  fi
+  echo $op_item_field_value
 }
 
 # ##### Export credentials #####
@@ -99,7 +159,8 @@ function export_cred() {
   fi
   "export_cred_$service" ${@:2}
 }
-# export gitlab credentials
+
+# ##### Export gitlab credentials #####
 alias ecgitlab='export_cred_gitlab'
 function export_cred_gitlab() {
   if ! _check_op; then
@@ -115,7 +176,8 @@ function export_cred_gitlab() {
     log_info "Gitlab credentials exported"
   return 0
 }
-# export cloudflare credentials
+
+# ##### Export cloudflare credentials #####
 alias eccloudflare='export_cred_cloudflare'
 function export_cred_cloudflare() {
   if ! _check_op; then
@@ -131,7 +193,8 @@ function export_cred_cloudflare() {
     log_info "Cloudflare credentials exported"
   return 0
 }
-# export proxmox credentials
+
+# ##### Export proxmox credentials #####
 alias ecproxmox='export_cred_proxmox'
 function export_cred_proxmox() {
   if ! _check_op; then
@@ -147,7 +210,8 @@ function export_cred_proxmox() {
     log_info "Proxmox credentials exported"
   return 0
 }
-# export ssh public key
+
+# ##### Export ssh public key #####
 alias ecssh='export_cred_ssh'
 function export_cred_ssh() {
   if ! _check_op; then
@@ -162,7 +226,8 @@ function export_cred_ssh() {
     log_info "SSH public key exported"
   return 0
 }
-# export vault credentials
+
+# ##### Export vault credentials #####
 alias ecvault='export_cred_vault'
 function export_cred_vault() {
   if ! _check_op; then
@@ -178,7 +243,38 @@ function export_cred_vault() {
     log_info "Vault credentials exported"
   return 0
 }
-# export aws credentials
+
+# ##### Export ansible vault password #####
+alias ecav='export_cred_ansible_vault'
+function export_cred_ansible_vault() {
+  if [[ "$1" == "help" || -z "$1" ]]; then
+    printf "Usage: ecav <string>\n"
+    printf "\n"
+    printf "This command will search for Ansible Vault password in 1Password and export the credentials.\n"
+    printf "A string is required and it will be added to 'Ansible Vault <string>' to search for the item.\n"
+    printf "\n"
+    printf "Example: ecav home-lab\n"
+    printf "This will search for 'Ansible Vault home-lab' in 1Password.\n"
+    printf "The items should have the field 'password'.\n"
+    printf "Make sure that you have the 1Password CLI installed and configured.\n"
+    return 0
+  fi
+  if ! _check_op; then
+    return 1
+  fi
+  local ansible_vault_op_item="Ansible Vault $1"
+  local ansible_vault_password=$(op item get $ansible_vault_op_item --fields password)
+  if [[ -z "$ansible_vault_password" ]]; then
+    log_error "Ansible Vault password not found in 1Password"
+    return 1
+  fi
+  export ANSIBLE_VAULT_PASSWORD_FILE=$HOME/.ansible_vault_password &&
+    echo $ansible_vault_password >$ANSIBLE_VAULT_PASSWORD_FILE &&
+    log_info "Ansible Vault password exported"
+  return 0
+}
+
+# ##### Export aws credentials #####
 alias ecaws='export_cred_aws'
 function export_cred_aws() {
   if [[ "$1" == "help" || -z "$1" || ! "$2" =~ '^[a-z]{2}-[a-z]+-[0-9]+$' ]]; then
