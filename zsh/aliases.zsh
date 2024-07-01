@@ -103,20 +103,20 @@ function op_helper() {
     return 1
   fi
   if [[ ! -z "$1" ]]; then
-    local op_item_id=$(printf $op_items | fzf --query $1 | sed 's/.*(\([a-z1-9]*\))/\1/')
+    local op_item_id=$(printf $op_items | fzf --header 'Select the 1Password item' --header-first --query $1 | sed 's/.*(\([a-z1-9]*\))/\1/')
   else
-    local op_item_id=$(printf $op_items | fzf | sed 's/.*(\([a-z1-9]*\))/\1/')
+    local op_item_id=$(printf $op_items | fzf --header 'Select the 1Password item' --header-first | sed 's/.*(\([a-z1-9]*\))/\1/')
   fi
   if [[ -z "$op_item_id" ]]; then
     log_error "No item selected"
     return 1
   fi
-  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[].id')
+  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[] | select(.id != "" and .id != "notesPlain") | .id')
   if [[ -z "$op_item_fields" ]]; then
     log_error "No fields found in 1Password item"
     return 1
   fi
-  local op_item_field=$(echo $op_item_fields | fzf)
+  local op_item_field=$(echo $op_item_fields | fzf --header 'Select the 1Password item field' --header-first)
   if [[ -z "$op_item_field" ]]; then
     log_error "No field selected"
     return 1
