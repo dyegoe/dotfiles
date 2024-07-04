@@ -9,17 +9,14 @@ function install_fzf() {
   fi
 
   # anything else
-  local fzf_version=$($CURL_CMD https://api.github.com/repos/junegunn/fzf/releases/latest | jq -r '.tag_name')
-  local fzf_local_version=$(command -v fzf &>/dev/null && fzf --version | awk '{print $1}' || echo "0.0.0")
-  local fzf_url="https://github.com/junegunn/fzf/releases/download/$fzf_version/fzf-$fzf_version-${OS}_${ARCH}.tar.gz"
-  if [[ "$fzf_version" == "$fzf_local_version" ]]; then
-    log_info "  fzf is up to date..."
-  else
-    log_info "  installing..."
-    rm -f /tmp/fzf.tar.gz
-    $CURL_CMD -o /tmp/fzf.tar.gz $fzf_url
-    rm -f $LOCAL_BIN/fzf
-    tar -C $LOCAL_BIN -xzf /tmp/fzf.tar.gz
-    chmod 750 $LOCAL_BIN/fzf
+  local remote_version=$(echo $(_curl_github https://api.github.com/repos/junegunn/fzf/releases/latest) | jq -r '.tag_name')
+  local local_version=$(command -v fzf &>/dev/null && fzf --version | awk '{print $1}' || echo "0.0.0")
+  local download_url="https://github.com/junegunn/fzf/releases/download/$remote_version/fzf-$remote_version-${OS}_${ARCH}.tar.gz"
+  local bin_name="fzf"
+  if [[ "$remote_version" == "$local_version" ]]; then
+    log_info "  $bin_name is up to date..."
+    return
   fi
+  log_info "  installing..."
+  download_tar_gz_local_bin $download_url $bin_name
 }

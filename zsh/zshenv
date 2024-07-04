@@ -30,9 +30,6 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
-# export XDG_RUNTIME_DIR="/run/user/$UID" # This one was causing issues on macos and 1Password cli
-# export XDG_DATA_DIRS="/usr/local/share:/usr/share"
-# export XDG_CONFIG_DIRS="/etc/xdg"
 
 # ##### Local Bin #####
 export LOCAL_BIN="$HOME/.local/bin"
@@ -104,8 +101,10 @@ if [[ $OS == "darwin" ]]; then
   export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 fi
 
+# ##### Terraform #####
+export TENV_ROOT="$XDG_CONFIG_HOME/tenv"
+
 # ##### Path #####
 export PATH="$LOCAL_BIN:$PATH"
-export PATH="$XDG_CONFIG_HOME/tfenv/bin:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"

@@ -39,15 +39,14 @@ function setup_oh_my_posh() {
 install_commands+="install_oh_my_posh "
 function install_oh_my_posh() {
   log_info "Install oh-my-posh..."
-  local oh_my_posh_version=$($CURL_CMD https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/latest | jq -r '.tag_name')
-  local oh_my_posh_local_version=v$(command -v oh-my-posh &>/dev/null && oh-my-posh --version || echo "0.0.0")
-  local oh_my_posh_url="https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/$oh_my_posh_version/posh-$OS-$ARCH"
-  if [[ "$oh_my_posh_version" == "$oh_my_posh_local_version" ]]; then
+  local remote_version=$(echo $(_curl_github https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/latest) | jq -r '.tag_name')
+  local local_version=v$(command -v oh-my-posh &>/dev/null && oh-my-posh --version || echo "0.0.0")
+  local download_url="https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/$remote_version/posh-$OS-$ARCH"
+  local bin_name="oh-my-posh"
+  if [[ "$remote_version" == "$local_version" ]]; then
     log_info "  oh-my-posh is up to date..."
-  else
-    log_info "  installing..."
-    rm -f $LOCAL_BIN/oh-my-posh
-    $CURL_CMD -o $LOCAL_BIN/oh-my-posh $oh_my_posh_url
-    chmod 750 $LOCAL_BIN/oh-my-posh
+    return
   fi
+  log_info "  installing..."
+  download_bin_local_bin $download_url $bin_name
 }

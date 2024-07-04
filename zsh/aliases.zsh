@@ -306,6 +306,40 @@ function export_cred_aws() {
   return 0
 }
 
+# ##### Export github personal access token #####
+alias ecgh='export_cred_github'
+function export_cred_github() {
+  if [[ "$1" == "help" || -z "$1" ]]; then
+    printf "Usage: ecgh <string>\n"
+    printf "\n"
+    printf "This command will search for a Github Personal Access Token in 1Password and export the credentials.\n"
+    printf "A string is required and it will be added to 'Github Personal Access Token <string>' to search for the item.\n"
+    printf "\n"
+    printf "Example: ecgh my-github-token\n"
+    printf "\n"
+    printf "This will search for 'Github Personal Access Token my-github-token' in 1Password.\n"
+    printf "The items should have the field 'token'.\n"
+    printf "Make sure that you have the 1Password CLI installed and configured.\n"
+    return 0
+  fi
+  if ! _check_op; then
+    return 1
+  fi
+  local github_op_item="Github Personal Access Token $1"
+  local github_token=$(op item get $github_op_item --fields token)
+  if [[ -z "$github_token" ]]; then
+    log_error "Github Personal Access Token not found in 1Password"
+    return 1
+  fi
+  export GITHUB_TOKEN=$github_token &&
+    log_info "Github Personal Access Token exported"
+  if command -v tenv &>/dev/null; then
+    export TENV_GITHUB_TOKEN=$github_token &&
+      log_info "TENV Github Personal Access Token exported"
+  fi
+  return 0
+}
+
 # ##### Python #####
 alias pyvenv='python_venv'
 function python_venv() {

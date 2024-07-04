@@ -112,4 +112,91 @@ function help() {
   printf "Usage: $0 [ full | install_packages | upgrade_system | setup | install | ${setup_commands// / | }${install_commands// / | }]" | sed 's/ | ]$/ ]/'
 }
 
+# ##### helpers #####
+# _curl_github $url
+function _curl_github() {
+  if [[ -z "$GITHUB_TOKEN" ]]; then
+    echo $(curl -fsSL -H "X-GitHub-Api-Version: 2022-11-28" "$@")
+    return
+  fi
+  echo $(curl -fsSL -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer $GITHUB_TOKEN" "$@")
+}
+
+# download_tar_gz_local_bin $download_url $bin_name [$bin_source]
+function download_tar_gz_local_bin() {
+  if [[ -z "$1" ]]; then
+    log_error "  download_tar_gz_local_bin: missing download_url..."
+    return
+  fi
+  local download_url=$1
+  if [[ -z "$2" ]]; then
+    log_error "  download_tar_gz_local_bin: missing bin_name..."
+    return
+  fi
+  local bin_name=$2
+  local bin_source=$2
+  if [[ ! -z "$3" ]]; then
+    bin_source=$3
+  fi
+  local temp_dir=$(mktemp -d)
+  mkdir -p $temp_dir
+  $CURL_CMD -o $temp_dir/download.tar.gz $download_url
+  tar -C $temp_dir -xzf $temp_dir/download.tar.gz
+  rm -f $LOCAL_BIN/$bin_name
+  mv $temp_dir/$bin_source $LOCAL_BIN
+  chmod 750 $LOCAL_BIN/$bin_name
+  rm -rf $temp_dir
+}
+
+# download_zip_local_bin $download_url $bin_name [$bin_source]
+function download_zip_local_bin() {
+  if [[ -z "$1" ]]; then
+    log_error "  download_zip_local_bin: missing download_url..."
+    return
+  fi
+  local download_url=$1
+  if [[ -z "$2" ]]; then
+    log_error "  download_zip_local_bin: missing bin_name..."
+    return
+  fi
+  local bin_name=$2
+  local bin_source=$2
+  if [[ ! -z "$3" ]]; then
+    bin_source=$3
+  fi
+  local temp_dir=$(mktemp -d)
+  mkdir -p $temp_dir
+  $CURL_CMD -o $temp_dir/download.zip $download_url
+  $UNZIP_CMD $temp_dir $temp_dir/download.zip
+  rm -f $LOCAL_BIN/$bin_name
+  mv $temp_dir/$bin_source $LOCAL_BIN
+  chmod 750 $LOCAL_BIN/$bin_name
+  rm -rf $temp_dir
+}
+
+# download_bin_local_bin $download_url $bin_name [$bin_source]
+function download_bin_local_bin() {
+  if [[ -z "$1" ]]; then
+    log_error "  download_bin_local_bin: missing download_url..."
+    return
+  fi
+  local download_url=$1
+  if [[ -z "$2" ]]; then
+    log_error "  download_bin_local_bin: missing bin_name..."
+    return
+  fi
+  local bin_name=$2
+  local bin_source=$2
+  if [[ ! -z "$3" ]]; then
+    bin_source=$3
+  fi
+  local temp_dir=$(mktemp -d)
+  mkdir -p $temp_dir
+  $CURL_CMD -o $temp_dir/$bin_name $download_url
+  rm -f $LOCAL_BIN/$bin_name
+  mv $temp_dir/$bin_source $LOCAL_BIN
+  chmod 750 $LOCAL_BIN/$bin_name
+  rm -rf $temp_dir
+}
+
 eval $@
