@@ -2,7 +2,6 @@
 setup_commands+="setup_vim "
 function setup_vim() {
   log_info "Setup Vim..."
-  # tgswitch
   local vimrc_symlink=$VIM_HOME/vimrc
   local vimrc_origin=$SCRIPT_DIR/vim/vimrc
 
