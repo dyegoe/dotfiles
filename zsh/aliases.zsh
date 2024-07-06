@@ -268,9 +268,11 @@ function export_cred_ansible_vault() {
     log_error "Ansible Vault password not found in 1Password"
     return 1
   fi
-  export ANSIBLE_VAULT_PASSWORD_FILE=$HOME/.ansible_vault_password &&
-    echo $ansible_vault_password >$ANSIBLE_VAULT_PASSWORD_FILE &&
-    log_info "Ansible Vault password exported"
+  echo '#!/usr/bin/env bash\necho $ANSIBLE_VAULT_PASSWORD' >$HOME/.ansible_vault_password
+  chmod 700 $HOME/.ansible_vault_password
+  export ANSIBLE_VAULT_PASSWORD_FILE=$HOME/.ansible_vault_password
+  export ANSIBLE_VAULT_PASSWORD=$ansible_vault_password
+  log_info "Ansible Vault password exported"
   return 0
 }
 
