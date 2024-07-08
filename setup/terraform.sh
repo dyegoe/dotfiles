@@ -20,7 +20,8 @@ function install_tenv() {
   mkdir -p $temp_dir
   $CURL_CMD -o $temp_dir/download.tar.gz $download_url
   tar -C $temp_dir -xzf $temp_dir/download.tar.gz
-  find "$temp_dir" -type f -perm +0111 -exec sh -c 'rm -f $0/$(basename $1)' $LOCAL_BIN {} \; -exec mv {} "$LOCAL_BIN" \;
+  [[ "$OS" == "linux" ]] && find "$temp_dir" -type f -perm /u=x,g=x,o=x -exec sh -c 'rm -f $0/$(basename $1)' $LOCAL_BIN {} \; -exec mv {} "$LOCAL_BIN" \;
+  [[ "$OS" == "darwin" ]] && find "$temp_dir" -type f -perm +0111 -exec sh -c 'rm -f $0/$(basename $1)' $LOCAL_BIN {} \; -exec mv {} "$LOCAL_BIN" \;
   return
   rm -rf $temp_dir
 }
