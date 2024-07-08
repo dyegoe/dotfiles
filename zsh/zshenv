@@ -10,7 +10,7 @@ DISTRO=unknow
 ARCH=amd64
 ARCHM=$(uname -m)
 
-if [[ "${OS}" = "linux" ]]; then
+if [[ "$OS" = "linux" ]]; then
   if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     DISTRO=$ID
@@ -48,7 +48,7 @@ export SAVEHIST=$HISTSIZE
 export HISTDUP=erase
 
 # ##### Libvirt #####
-if [[ $DISTRO == "fedora" ]]; then
+if [[ "$DISTRO" == "fedora" ]]; then
   export LIBVIRT_DEFAULT_URI="qemu:///system"
 fi
 
@@ -59,7 +59,7 @@ export AWS_PAGER=
 export TMUX_PLUGIN_MANAGER_PATH="$XDG_CONFIG_HOME/tmux/plugins"
 
 # ##### Vim #####
-if [[ $OS == "darwin" ]]; then
+if [[ "$OS" == "darwin" ]]; then
   export VIM_HOME="$HOME/.vim"
   export VIM_PACK="$VIM_HOME/pack"
   export VIM_THEMES="$VIM_PACK/themes/start"
@@ -97,7 +97,7 @@ export GOROOT="/usr/local/go"
 export GOPATH="$XDG_CONFIG_HOME/go"
 
 # ##### 1Password #####
-if [[ $OS == "darwin" ]]; then
+if [[ "$OS" == "darwin" ]]; then
   export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 fi
 

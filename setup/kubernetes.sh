@@ -48,7 +48,7 @@ function install_helm() {
     return
   fi
   log_info "  installing..."
-  download_tar_gz_local_bin $download_url $bin_name "linux-$ARCH/$bin_name"
+  download_tar_gz_local_bin $download_url $bin_name "$OS-$ARCH/$bin_name"
 }
 
 function install_kubectx() {
