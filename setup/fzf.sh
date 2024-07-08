@@ -11,9 +11,9 @@ function install_fzf() {
   # anything else
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/junegunn/fzf/releases/latest) | jq -r '.tag_name')
   local local_version=$(command -v fzf &>/dev/null && fzf --version | awk '{print $1}' || echo "0.0.0")
-  local download_url="https://github.com/junegunn/fzf/releases/download/$remote_version/fzf-$remote_version-${OS}_${ARCH}.tar.gz"
+  local download_url="https://github.com/junegunn/fzf/releases/download/$remote_version/fzf-${remote_version:1}-${OS}_${ARCH}.tar.gz"
   local bin_name="fzf"
-  if [[ "$remote_version" == "$local_version" ]]; then
+  if [[ "${remote_version:1}" == "$local_version" ]]; then
     log_info "  $bin_name is up to date..."
     return
   fi
