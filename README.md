@@ -1,6 +1,8 @@
-# Fedora
+# Dotfiles
 
-## Installation
+## Fedora 40
+
+### Installation
 
 - Select `English (United Kingdom)` as language
 - Select the keyboard: `English (US, intl., with dead keys)`
@@ -9,7 +11,7 @@
 - Select the EFI partition and mount as `/boot/efi`.
 - Begin installation
 
-## Post Installation
+### Post Installation
 
 - Start Setup
 - Enable third-party packages
@@ -29,7 +31,7 @@ Node: The `setup.sh` script is unable to enable the `gnome-extensions` in a sing
 $HOME/dotfiles/setup.sh install_gnome_extensions
 ```
 
-### Setup 1Password
+#### Setup 1Password
 
 - Open 1Password and sign in
 - Setup SSH Agent
@@ -44,3 +46,41 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
   - Enable "Command-Line Interface (CLI)" option under Developer (as above)
   - `op signin`
   - If you forgot to enable the option, 1Password will prompt you to do so.
+
+## MacOS
+
+### Manual configuration
+
+Git repositories that are work related should be cloned under `~/git/work` directory.
+Create the directory if it does not exist.
+
+```bash
+mkdir -p ~/git/work
+```
+
+And under the `~/git/work/` directory, create `.gitconfig` file with smilar content as below:
+
+```bash
+[user]
+  name = Dyego Alexandre Eugenio
+  email = dyego.alexandre.eugenio@company.example
+
+[commit]
+  gpgsign = false
+
+[pull]
+  rebase = true
+
+[init]
+  defaultBranch = master
+
+[credential "https://git.example.com"]
+  username = dyego.alexandre.eugenio
+  helper = "!f() { test \"$1\" = get && echo \"password=$(op item get xxxxxxxx --fields xxxxxxx)\"; }; f"
+```
+
+## References
+
+### Git Credentials
+
+[Git Credentials](https://git-scm.com/docs/gitcredentials)
