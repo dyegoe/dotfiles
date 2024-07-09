@@ -45,7 +45,8 @@ function install_packages() {
     if ! command -v brew &>/dev/null; then
       log_info "Install Homebrew..."
       /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      # TODO: need to eval brew during the first install
+      unset NONINTERACTIVE
+      eval $(/opt/homebrew/bin/brew shellenv)
     fi
     # because darwin already has zsh, we don't install it
     log_info "  Installing packages using brew..."
@@ -53,7 +54,7 @@ function install_packages() {
       fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
       grep gawk gnu-sed coreutils \
       ansible pre-commit
-    # TODO: install roseta: sudo softwareupdate --agree-to-license --install-rosetta
+    sudo softwareupdate --agree-to-license --install-rosetta
     return
   fi
 

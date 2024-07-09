@@ -111,12 +111,12 @@ function op_helper() {
     log_error "No item selected"
     return 1
   fi
-  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[] | select(.id != "" and .id != "notesPlain") | .id')
+  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[] | select(.id != "" and .id != "notesPlain") | "\(.label) (\(.id))"')
   if [[ -z "$op_item_fields" ]]; then
     log_error "No fields found in 1Password item"
     return 1
   fi
-  local op_item_field=$(echo $op_item_fields | fzf --header 'Select the 1Password item field' --header-first)
+  local op_item_field=$(echo $op_item_fields | fzf --header 'Select the 1Password item field' --header-first | sed 's/.*(\([a-z1-9]*\))/\1/')
   if [[ -z "$op_item_field" ]]; then
     log_error "No field selected"
     return 1
