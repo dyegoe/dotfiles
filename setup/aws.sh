@@ -19,9 +19,11 @@ function install_awscli() {
     $CURL_CMD -o $temp_dir/sessionmanager-bundle.zip https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_${ARCHM}/sessionmanager-bundle.zip
     $UNZIP_CMD $temp_dir $temp_dir/sessionmanager-bundle.zip
     sudo $temp_dir/sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin
+    log_info "  installed..."
   fi
   if [[ "$OS" == "linux" && "$DISTRO" == "fedora" ]]; then
     sudo dnf install -y https://s3.amazonaws.com/session-manager-downloads/plugin/latest/linux_${ARCHS}/session-manager-plugin.rpm
+    log_info "  installed..."
   fi
   rm -rf $temp_dir
 }
