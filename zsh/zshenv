@@ -103,6 +103,7 @@ fi
 
 # ##### Terraform #####
 export TENV_ROOT="$XDG_CONFIG_HOME/tenv"
+export TENV_AUTO_INSTALL=true
 
 # ##### Path #####
 export PATH="$LOCAL_BIN:$PATH"
