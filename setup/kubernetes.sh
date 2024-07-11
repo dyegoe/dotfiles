@@ -18,6 +18,7 @@ function install_kubectl() {
     log_info "  $bin_name is up to date..."
     return
   fi
+  log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
 }
 
