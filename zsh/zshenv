@@ -7,8 +7,15 @@ export TERM='rxvt-256color'
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 OSS=$(uname -s)
 DISTRO=unknow
-ARCH=amd64
 ARCHM=$(uname -m)
+if [[ "$ARCHM" == "x86_64" ]]; then
+  ARCH="amd64"
+  ARCHS="64bit"
+fi
+if [[ "$ARCHM" == "arm64" ]]; then
+  ARCH="arm64"
+  ARCHS="arm64"
+fi
 
 if [[ "$OS" = "linux" ]]; then
   if [[ -f /etc/os-release ]]; then
@@ -109,6 +116,6 @@ export TENV_AUTO_INSTALL=true
 export PATH="$LOCAL_BIN:$PATH"
 export PATH="$GOROOT/bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-if [[ "$OS" == "darwin" ]]; then 
+if [[ "$OS" == "darwin" ]]; then
   export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 fi
