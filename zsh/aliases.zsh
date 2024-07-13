@@ -296,14 +296,14 @@ function export_cred_aws() {
     return 1
   fi
   local aws_op_item="AWS Access Key $1"
-  local aws_default_region=$2
+  local aws_region=$2
   local aws_access_key_id=$(op item get $aws_op_item --fields 'access key id')
   local aws_secret_access_key=$(op item get $aws_op_item --fields 'secret access key')
   if [[ -z "$aws_access_key_id" || -z "$aws_secret_access_key" ]]; then
     log_error "AWS credentials not found in 1Password"
     return 1
   fi
-  export AWS_DEFAULT_REGION=$aws_default_region AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key &&
+  export AWS_REGION=$aws_region AWS_ACCESS_KEY_ID=$aws_access_key_id AWS_SECRET_ACCESS_KEY=$aws_secret_access_key &&
     log_info "AWS credentials exported"
   return 0
 }
