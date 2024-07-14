@@ -1,11 +1,6 @@
 #!/usr/bin/env zsh
 
 # ##### Completion #####
-autoload -Uz compinit && compinit
-autoload -Uz bashcompinit && bashcompinit
-
-command -v aws_completer &>/dev/null && complete -C aws_completer aws
-
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
@@ -13,7 +8,20 @@ zstyle ':completion:*' max-errors 2
 zstyle ':completion:*' menu select=2
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion::*:ls::*' fzf-completion-opts --preview='eval head {1} --tmux bottom'
+zstyle ':completion::*:cd::*' fzf-completion-opts --preview='eza --tree --level 1 --color=always {2} | head -200'
+zstyle ':completion::*:(export|unset)::*' fzf-completion-opts --preview="eval 'echo $'{2}"
+zstyle ':completion::*:aws::*' fzf-completion-opts -m 0
+zstyle ':completion::*:*::*' fzf-completion-opts --preview='[[ $(file --mime {2}) =~ directory ]] && eza --tree --level 1 --color=always --icons {2} || ([[ $(file --mime {2}) =~ binary ]] && echo {2} is binary file || bat -n --color=always -r :500 {2})'
+
+
+autoload -Uz compinit
+compinit -C
+autoload -Uz bashcompinit
+bashcompinit
+
+if command -v aws_completer &>/dev/null; then
+  complete -C aws_completer aws
+fi
 
 # ##### Keybindings #####
 autoload -U up-line-or-beginning-search
@@ -48,33 +56,46 @@ source $ZDOTDIR/aliases.zsh
 # ##### Options #####
 setopt auto_cd
 
-# ##### Plugins #####
-[[ -d $ZDOTDIR/plugins/fzf-tab-completion ]] && source $ZDOTDIR/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
-[[ -d $ZDOTDIR/plugins/zsh-autosuggestions ]] && source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-[[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ]] && source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
 # ##### zoxide #####
-command -v zoxide &>/dev/null && eval "$(zoxide init --cmd cd zsh)"
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init --cmd cd zsh)"
+fi
 
 # ##### fzf #####
-command -v fzf &>/dev/null && eval "$(fzf --zsh)"
-_fzf_compgen_path() {
-  fd -H -E .git -E .cache -E . -E .config "$1"
-}
-_fzf_compgen_dir() {
-  fd -H -E .git -E .cache -E . -E .config -t d "$1"
-}
-_fzf_comprun() {
-  local command=$1
-  shift
+if command -v fzf &>/dev/null; then
+  eval "$(fzf --zsh)"
 
-  case "$command" in
-    cd)           fzf --preview='eza --tree --level 1 --color=always {} | head -200' "$@" ;;
-    export|unset) fzf --preview="eval 'echo $'{}"                                    "$@" ;;
-    ssh)          fzf --preview='dig +short {}'                                      "$@" ;;
-    *)            fzf --preview="$FZF_PREVIEW_COMMAND"                               "$@" ;;
-  esac
-}
+  _fzf_compgen_path() {
+    fd -H -E .git -E .cache -E . -E .config "$1"
+  }
+  _fzf_compgen_dir() {
+    fd -H -E .git -E .cache -E . -E .config -t d "$1"
+  }
+  _fzf_comprun() {
+    local command=$1
+    shift
+
+    case "$command" in
+      cd)           fzf --preview='eza --tree --level 1 --color=always {} | head -200' "$@" ;;
+      export|unset) fzf --preview="eval 'echo $'{}"                                    "$@" ;;
+      ssh)          fzf --preview='dig +short {}'                                      "$@" ;;
+      *)            fzf --preview="$FZF_PREVIEW_COMMAND"                               "$@" ;;
+    esac
+  }
+fi
+
+# ##### Plugins #####
+if [[ -d $ZDOTDIR/plugins/fzf-tab-completion ]]; then
+  source $ZDOTDIR/plugins/fzf-tab-completion/zsh/fzf-zsh-completion.sh
+fi
+if [[ -d $ZDOTDIR/plugins/zsh-autosuggestions ]]; then
+  source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+if [[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ]]; then
+  source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # ##### oh-my-posh #####
-command -v oh-my-posh &>/dev/null && eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/my.json)"
+if command -v oh-my-posh &>/dev/null; then
+  eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/my.json)"
+fi
