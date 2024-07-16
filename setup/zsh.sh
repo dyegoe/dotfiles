@@ -22,7 +22,7 @@ function setup_zsh() {
   fi
 
   if [[ ! -L $zshenv_symlink ]]; then
-    log_info "  Creating the symlink for .zshenv..."
+    log_info "  creating the symlink for .zshenv..."
     ln -s $zshenv_origin $zshenv_symlink
   fi
 
@@ -46,7 +46,7 @@ function setup_zsh() {
   fi
 
   if [[ ! -L $zprofile_symlink ]]; then
-    log_info "  Creating the symlink for .zprofile..."
+    log_info "  creating the symlink for .zprofile..."
     ln -s $zprofile_origin $zprofile_symlink
   fi
 
@@ -70,7 +70,7 @@ function setup_zsh() {
   fi
 
   if [[ ! -L $zshrc_symlink ]]; then
-    log_info "  Creating the symlink for .zshrc..."
+    log_info "  creating the symlink for .zshrc..."
     ln -s $zshrc_origin $zshrc_symlink
   fi
 
@@ -94,38 +94,43 @@ function setup_zsh() {
   fi
 
   if [[ ! -L $aliases_symlink ]]; then
-    log_info "  Creating the symlink for aliases.zsh..."
+    log_info "  creating the symlink for aliases.zsh..."
     ln -s $aliases_origin $aliases_symlink
   fi
+
+  log_info "  setup done..."
 }
 
 # ##### Install ZSH plugins #####
 install_commands+="install_zsh_plugins "
 function install_zsh_plugins() {
+  log_info "Install ZSH plugins..."
   # zsh-autosuggestions
   if [[ ! -d $ZDOTDIR/plugins/zsh-autosuggestions ]]; then
-    log_info "Install zsh-autosuggestions..."
+    log_info "  install zsh-autosuggestions..."
     git clone https://github.com/zsh-users/zsh-autosuggestions $ZDOTDIR/plugins/zsh-autosuggestions
   else
-    log_info "Update zsh-autosuggestions..."
+    log_info "  update zsh-autosuggestions..."
     cd $ZDOTDIR/plugins/zsh-autosuggestions && git pull
   fi
 
   # zsh-syntax-highlighting
   if [[ ! -d $ZDOTDIR/plugins/zsh-syntax-highlighting ]]; then
-    log_info "Install zsh-syntax-highlighting..."
+    log_info "  install zsh-syntax-highlighting..."
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZDOTDIR/plugins/zsh-syntax-highlighting
   else
-    log_info "Update zsh-syntax-highlighting..."
+    log_info "  update zsh-syntax-highlighting..."
     cd $ZDOTDIR/plugins/zsh-syntax-highlighting && git pull
   fi
 
   # fzf-tab-completion
   if [[ ! -d $ZDOTDIR/plugins/fzf-tab-completion ]]; then
-    log_info "Install fzf-tab-completion..."
+    log_info "  install fzf-tab-completion..."
     git clone https://github.com/lincheney/fzf-tab-completion $ZDOTDIR/plugins/fzf-tab-completion
   else
-    log_info "Update fzf-tab-completion..."
+    log_info "  update fzf-tab-completion..."
     cd $ZDOTDIR/plugins/fzf-tab-completion && git pull
   fi
+
+  log_info "  done..."
 }

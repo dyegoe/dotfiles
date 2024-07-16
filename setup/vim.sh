@@ -25,9 +25,10 @@ function setup_vim() {
   fi
 
   if [[ ! -L $vimrc_symlink ]]; then
-    log_info "  Creating the symlink for .vimrc..."
+    log_info "  creating the symlink for .vimrc..."
     ln -s $vimrc_origin $vimrc_symlink
   fi
+  log_info "  setup done..."
 }
 
 # ##### Install vim plugins #####
@@ -54,4 +55,5 @@ function install_vim_plugins() {
     log_info "  vim-terraform already installed... update it..."
     cd $vim_plugins_vim_terraform && git pull
   fi
+  log_info "  done..."
 }

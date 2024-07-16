@@ -24,35 +24,38 @@ function setup_tmux() {
   fi
 
   if [[ ! -L $tmux_conf_symlink ]]; then
-    log_info "  Creating the symlink for tmux.conf..."
+    log_info "  creating the symlink for tmux.conf..."
     ln -s $tmux_conf_origin $tmux_conf_symlink
   fi
+  log_info "  setup done..."
 }
 
 # ##### Install Tmux plugins #####
 install_commands+="install_tmux_plugins "
 function install_tmux_plugins() {
+  log_info "Install Tmux plugins..."
   local tmux_plugins_dir="$XDG_CONFIG_HOME/tmux/plugins"
   local tmux_plugins_tpm_url="https://github.com/tmux-plugins/tpm.git"
   local tmux_plugins_tpm_dir="$tmux_plugins_dir/tpm"
 
   if [[ ! -d $tmux_plugins_dir ]]; then
-    log_info "Creating tmux plugins..."
+    log_info "  creating tmux plugins..."
     mkdir -p $tmux_plugins_dir
-  else
-    log_info "Tmux plugins directoy already exists..."
   fi
 
-  if [[ ! -d $tmux_plugins_tpm_dir ]]; then
-    log_info "Instal tmux tpm plugin..."
-    git clone $tmux_plugins_tpm_url $tmux_plugins_tpm_dir
-  else
-    log_info "Update tmux tpm plugin..."
+  if [[ -d $tmux_plugins_tpm_dir ]]; then
+    log_info "  updating..."
     cd $tmux_plugins_tpm_dir
     git pull
     cd $SCRIPT_DIR
+    log_info "  updated..."
+    return
   fi
+  log_info "  installing..."
+  git clone $tmux_plugins_tpm_url $tmux_plugins_tpm_dir
+  log_info "  installed..."
 
-  log_info "Install tmux plugins..."
+  log_info "  tmux plugins..."
   $tmux_plugins_tpm_dir/bin/install_plugins
+  log_info "  done..."
 }

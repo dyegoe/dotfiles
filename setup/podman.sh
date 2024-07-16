@@ -7,4 +7,5 @@ function setup_podman_docker() {
     return
   fi
   sudo touch /etc/containers/nodocker
+  log_info "  setup done..."
 }

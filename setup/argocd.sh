@@ -7,9 +7,10 @@ function install_argocd() {
   local download_url="https://github.com/argoproj/argo-cd/releases/download/$remote_version/argocd-$OS-$ARCH"
   local bin_name="argocd"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

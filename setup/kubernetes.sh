@@ -15,26 +15,27 @@ function install_kubectl() {
   local download_url="https://dl.k8s.io/release/$remote_version/bin/$OS/$ARCH/kubectl"
   local bin_name="kubectl"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
+  log_info "  installed..."
 }
 
 function install_netshoot() {
-  # plugin
   log_info "Install netshoot..."
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/nilic/kubectl-netshoot/releases/latest) | jq -r '.tag_name')
   local local_version=$(command -v kubectl-netshoot &>/dev/null && kubectl-netshoot version | awk '{print $2}' || echo "v0.0.0")
   local download_url="https://github.com/nilic/kubectl-netshoot/releases/download/$remote_version/kubectl-netshoot_${remote_version}_${OS}_${ARCH}.tar.gz"
   local bin_name="kubectl-netshoot"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
+  log_info "  installed..."
 }
 
 function install_helm() {
@@ -45,11 +46,12 @@ function install_helm() {
   local temp_dir="/tmp/helm"
   local bin_name="helm"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  helm is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name "$OS-$ARCH/$bin_name"
+  log_info "  installed..."
 }
 
 function install_kubectx() {
@@ -59,11 +61,12 @@ function install_kubectx() {
   local download_url="https://github.com/ahmetb/kubectx/releases/download/$remote_version/kubectx_${remote_version}_${OS}_${ARCHM}.tar.gz"
   local bin_name="kubectx"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  kubectx is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
+  log_info "  installed..."
 }
 
 function install_k9s() {
@@ -74,9 +77,10 @@ function install_k9s() {
   local download_url="https://github.com/derailed/k9s/releases/download/$remote_version/k9s_${OSS}_${ARCH}.tar.gz"
   local bin_name="k9s"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  k9s is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

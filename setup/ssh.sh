@@ -28,7 +28,8 @@ function setup_ssh() {
   fi
 
   if [[ ! -L $ssh_config_symlink ]]; then
-    log_info "  Creating the symlink for config..."
+    log_info "  creating the symlink for config..."
     ln -s $ssh_config_origin $ssh_config_symlink
   fi
+  log_info "  setup done..."
 }

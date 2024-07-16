@@ -29,9 +29,10 @@ function setup_oh_my_posh() {
     fi
 
     if [[ ! -L $oh_my_posh_symlink ]]; then
-      log_info "  Creating the symlink for $template..."
+      log_info "  creating the symlink for $template..."
       ln -s $oh_my_posh_origin $oh_my_posh_symlink
     fi
+    log_info "  setup for $template done..."
   done
 }
 
@@ -44,9 +45,10 @@ function install_oh_my_posh() {
   local download_url="https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/$remote_version/posh-$OS-$ARCH"
   local bin_name="oh-my-posh"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  oh-my-posh is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

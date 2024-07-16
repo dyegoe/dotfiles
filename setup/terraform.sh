@@ -12,7 +12,7 @@ function install_tenv() {
   local local_version=$(command -v tenv &>/dev/null && tenv version | awk '{print $3}' || echo "0.0.0")
   local download_url="https://github.com/tofuutils/tenv/releases/download/$remote_version/tenv_${remote_version}_${OSS}_${ARCHM}.tar.gz"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  tenv is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
@@ -22,8 +22,8 @@ function install_tenv() {
   tar -C $temp_dir -xzf $temp_dir/download.tar.gz
   [[ "$OS" == "linux" ]] && find "$temp_dir" -type f -perm /u=x,g=x,o=x -exec sh -c 'rm -f $0/$(basename $1)' $LOCAL_BIN {} \; -exec mv {} "$LOCAL_BIN" \;
   [[ "$OS" == "darwin" ]] && find "$temp_dir" -type f -perm +0111 -exec sh -c 'rm -f $0/$(basename $1)' $LOCAL_BIN {} \; -exec mv {} "$LOCAL_BIN" \;
-  return
   rm -rf $temp_dir
+  log_info "  installed..."
 }
 
 function install_terraform_docs() {
@@ -33,11 +33,12 @@ function install_terraform_docs() {
   local download_url="https://github.com/terraform-docs/terraform-docs/releases/download/$remote_version/terraform-docs-$remote_version-$OS-$ARCH.tar.gz"
   local bin_name="terraform-docs"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
+  log_info "  installed..."
 }
 
 function install_tflint() {
@@ -47,9 +48,10 @@ function install_tflint() {
   local download_url="https://github.com/terraform-linters/tflint/releases/download/$remote_version/tflint_${OS}_${ARCH}.zip"
   local bin_name="tflint"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_zip_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

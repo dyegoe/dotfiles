@@ -7,9 +7,10 @@ function install_vault() {
   local download_url="https://releases.hashicorp.com/vault/${remote_version:1}/vault_${remote_version:1}_${OS}_${ARCH}.zip"
   local bin_name="vault"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_zip_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

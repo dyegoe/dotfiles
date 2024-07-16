@@ -24,7 +24,8 @@ function setup_alacritty() {
   fi
 
   if [[ ! -L $alacritty_symlink ]]; then
-    log_info "  Creating the symlink for alacritty.toml..."
+    log_info "  creating the symlink for alacritty.toml..."
     ln -s $alacritty_origin $alacritty_symlink
   fi
+  log_info "  setup done..."
 }

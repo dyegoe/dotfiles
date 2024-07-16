@@ -14,9 +14,10 @@ function install_fzf() {
   local download_url="https://github.com/junegunn/fzf/releases/download/$remote_version/fzf-${remote_version:1}-${OS}_${ARCH}.tar.gz"
   local bin_name="fzf"
   if [[ "${remote_version:1}" == "$local_version" ]]; then
-    log_info "  $bin_name is up to date..."
+    log_info "  is up to date..."
     return
   fi
   log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
+  log_info "  installed..."
 }

@@ -2,10 +2,6 @@
 setup_commands+="setup_git "
 function setup_git() {
   log_info "Setup Git..."
-#  if [[ "$OS" == "darwin" ]]; then
-#    log_info "  $OS doesn't need further Git setup... Git setup skipped..."
-#    return
-#  fi
   local gitconfig_symlink=$HOME/.gitconfig
   local gitconfig_origin=$SCRIPT_DIR/git/gitconfig.$OS
 
@@ -25,7 +21,8 @@ function setup_git() {
   fi
 
   if [[ ! -L $gitconfig_symlink ]]; then
-    log_info "  Creating the symlink for .gitconfig..."
+    log_info "  creating the symlink for .gitconfig..."
     ln -s $gitconfig_origin $gitconfig_symlink
   fi
+  log_info "  setup done..."
 }
