@@ -13,7 +13,7 @@ alias ll='eza --icons=always --git -lah'
 alias ls='eza --icons --git'
 
 # ##### Bat #####
-alias cat='bat -p'
+alias cat='bat -pp'
 
 # ##### Git #####
 # Copied from https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/git.zsh

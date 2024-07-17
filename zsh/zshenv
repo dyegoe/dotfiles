@@ -80,6 +80,7 @@ fi
 
 # ##### Bat #####
 export BAT_THEME="Visual Studio Dark+"
+export BAT_PAGING="never"
 
 # ##### FZF #####
 export FZF_DEFAULT_COMMAND='fd -E .git -E .cache -E .config -E .'
