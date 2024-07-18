@@ -121,7 +121,7 @@ function op_helper() {
     log_error "No field selected"
     return 1
   fi
-  local op_item_field_value=$(op item get $op_item_id --fields $op_item_field --format json | jq -r '.[] | "[\(.label)] \(.value)"')
+  local op_item_field_value=$(op item get $op_item_id --fields $op_item_field --format json | jq -r '(. as $in | if type == "array" then $in[] else $in end) | "[\(.label)] \(.value)"')
   if [[ -z "$op_item_field_value" ]]; then
     log_error "No value found for field $op_item_field"
     return 1
