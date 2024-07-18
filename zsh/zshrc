@@ -10,7 +10,6 @@ zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character t
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 zstyle ':completion::*:cd::*' fzf-completion-opts --preview='eval eza --tree --level 1 --color=always {1} | head -200'
 zstyle ':completion::*:(vi|cat|bat|ls|eza|code)::*' fzf-completion-opts --preview='[[ $(eval file --mime {1}) =~ directory ]] && eval eza --tree --level 1 --color=always --icons {1} || ([[ $(eval file --mime {1}) =~ binary ]] && eval echo {1} is binary file || eval bat -n --color=always -r :500 {1})'
-zstyle ':completion::*:(export|unset)::*' fzf-completion-opts --preview='eval echo "$"$(eval echo {1})'
 zstyle ':completion::*:aws::*' fzf-completion-opts -m 0
 zstyle ':completion::*:kill::*' fzf-completion-opts --preview='eval ps -f -p {1}'
 
