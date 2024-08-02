@@ -19,3 +19,9 @@ args = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
 
 [scrolling]
 history = 10000
+
+[keyboard]
+bindings = [
+  { key = "Right", mods = "Alt", chars = "\u001BF" },
+  { key = "Left", mods = "Alt", chars = "\u001BB" },
+]
