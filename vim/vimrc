@@ -79,6 +79,11 @@ set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 " Set colorscheme
 colorscheme codedark
 
+" transparent bg
+hi Normal guibg=NONE ctermbg=NONE
+hi EndOfBuffer guibg=NONE ctermbg=NONE
+hi LineNr guibg=NONE ctermbg=NONE
+
 " VIMSCRIPT -------------------------------------------------------------- {{{
 
 " This will enable code folding.
