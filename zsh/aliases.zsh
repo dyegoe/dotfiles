@@ -376,3 +376,6 @@ function python_venv() {
     log_info "Virtual environment $python_venv_name activated" ||
     log_error "Failed to activate virtual environment $python_venv_name"
 }
+
+# ##### Kubernetes #####
+alias k='kubectl'

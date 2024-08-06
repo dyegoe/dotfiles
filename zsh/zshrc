@@ -16,7 +16,7 @@ zstyle ':completion::*:kill::*' fzf-completion-opts --preview='eval ps -f -p {1}
 
 
 autoload -Uz compinit
-compinit -C
+compinit
 autoload -Uz bashcompinit
 bashcompinit
 

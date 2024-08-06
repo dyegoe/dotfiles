@@ -1,3 +1,20 @@
+# ##### Setup kubernetes #####
+setup_commands+="setup_kubernetes "
+function setup_kubernetes() {
+  setup_kubectl
+}
+
+function setup_kubectl() {
+  if command -v kubectl &>/dev/null; then
+    local kubectl_completion_file="$ZDOTDIR/functions/_kubectl"
+    log_info "Setup kubectl..."
+    mkdir -p $ZDOTDIR/functions
+    kubectl completion zsh >$kubectl_completion_file
+    chmod 755 $kubectl_completion_file
+    log_info "  setup done..."
+  fi
+}
+
 # ##### Install kubernetes #####
 install_commands+="install_kubernetes "
 function install_kubernetes() {
@@ -70,7 +87,6 @@ function install_kubectx() {
 }
 
 function install_k9s() {
-  # k9s
   log_info "Install k9s..."
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/derailed/k9s/releases/latest) | jq -r '.tag_name')
   local local_version=$(command -v k9s &>/dev/null && k9s version --short | grep Version | awk '{print $2}' || echo "v0.0.0")
