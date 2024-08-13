@@ -111,7 +111,7 @@ function op_helper() {
     log_error "No item selected"
     return 1
   fi
-  local op_item_fields=$(op item get $op_item_id --format json | jq -r '.fields[] | select(.id != "" and .id != "notesPlain") | "\(.label) (\(.id))"')
+  local op_item_fields=$(op item get $op_item_id --format json --reveal | jq -r '.fields[] | select(.id != "" and .id != "notesPlain") | "\(.label) (\(.id))"')
   if [[ -z "$op_item_fields" ]]; then
     log_error "No fields found in 1Password item"
     return 1
@@ -121,7 +121,7 @@ function op_helper() {
     log_error "No field selected"
     return 1
   fi
-  local op_item_field_value=$(op item get $op_item_id --fields $op_item_field --format json | jq -r '(. as $in | if type == "array" then $in[] else $in end) | "[\(.label)] \(.value)"')
+  local op_item_field_value=$(op item get $op_item_id --fields $op_item_field --format json --reveal | jq -r '(. as $in | if type == "array" then $in[] else $in end) | "[\(.label)] \(.value)"')
   if [[ -z "$op_item_field_value" ]]; then
     log_error "No value found for field $op_item_field"
     return 1
@@ -166,8 +166,8 @@ function export_cred_gitlab() {
   if ! _check_op; then
     return 1
   fi
-  local gitlab_user=$(op item get ijy23npdfhkrjc54ntffjekr5a --fields username)
-  local gitlab_token=$(op item get hsn4rskbnen4g3m5lqb4totaou --fields token)
+  local gitlab_user=$(op item get ijy23npdfhkrjc54ntffjekr5a --fields username --reveal)
+  local gitlab_token=$(op item get hsn4rskbnen4g3m5lqb4totaou --fields token --reveal)
   if [[ -z "$gitlab_user" || -z "$gitlab_token" ]]; then
     log_error "Gitlab credentials not found in 1Password"
     return 1
@@ -183,8 +183,8 @@ function export_cred_cloudflare() {
   if ! _check_op; then
     return 1
   fi
-  local cloudflare_account_id=$(op item get neo3orqoubdi5ilhx4yauzgww4 --fields 'account ID')
-  local cloudflare_api_token=$(op item get dgmyyo2fzipvx3qhpm7qgljux4 --fields credential)
+  local cloudflare_account_id=$(op item get neo3orqoubdi5ilhx4yauzgww4 --fields 'account ID' --reveal)
+  local cloudflare_api_token=$(op item get dgmyyo2fzipvx3qhpm7qgljux4 --fields credential --reveal)
   if [[ -z "$cloudflare_account_id" || -z "$cloudflare_api_token" ]]; then
     log_error "Cloudflare credentials not found in 1Password"
     return 1
@@ -200,8 +200,8 @@ function export_cred_proxmox() {
   if ! _check_op; then
     return 1
   fi
-  local proxmox_user=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields username)
-  local proxmox_password=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields password)
+  local proxmox_user=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields username --reveal)
+  local proxmox_password=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields password --reveal)
   if [[ -z "$proxmox_user" || -z "$proxmox_password" ]]; then
     log_error "Proxmox credentials not found in 1Password"
     return 1
@@ -217,7 +217,7 @@ function export_cred_ssh() {
   if ! _check_op; then
     return 1
   fi
-  local ssh_public_key=$(op item get josurj44uxonxdvlk5mgk7hcvy --fields 'public key')
+  local ssh_public_key=$(op item get josurj44uxonxdvlk5mgk7hcvy --fields 'public key' --reveal)
   if [[ -z "$ssh_public_key" ]]; then
     log_error "SSH public key not found in 1Password"
     return 1
@@ -233,8 +233,8 @@ function export_cred_vault() {
   if ! _check_op; then
     return 1
   fi
-  local vault_addr=$(op item get sjohltwhbvcdin62uranbih3ay --fields hostname)
-  local vault_token=$(op item get sjohltwhbvcdin62uranbih3ay --fields credential)
+  local vault_addr=$(op item get sjohltwhbvcdin62uranbih3ay --fields hostname --reveal)
+  local vault_token=$(op item get sjohltwhbvcdin62uranbih3ay --fields credential --reveal)
   if [[ -z "$vault_addr" || -z "$vault_token" ]]; then
     log_error "Vault credentials not found in 1Password"
     return 1
@@ -263,7 +263,7 @@ function export_cred_ansible_vault() {
     return 1
   fi
   local ansible_vault_op_item="Ansible Vault $1"
-  local ansible_vault_password=$(op item get $ansible_vault_op_item --fields password)
+  local ansible_vault_password=$(op item get $ansible_vault_op_item --fields password --reveal)
   if [[ -z "$ansible_vault_password" ]]; then
     log_error "Ansible Vault password not found in 1Password"
     return 1
@@ -297,8 +297,8 @@ function export_cred_aws() {
   fi
   local aws_op_item="AWS Access Key $1"
   local aws_region=$2
-  local aws_access_key_id=$(op item get $aws_op_item --fields 'access key id')
-  local aws_secret_access_key=$(op item get $aws_op_item --fields 'secret access key')
+  local aws_access_key_id=$(op item get $aws_op_item --fields 'access key id' --reveal)
+  local aws_secret_access_key=$(op item get $aws_op_item --fields 'secret access key' --reveal)
   if [[ -z "$aws_access_key_id" || -z "$aws_secret_access_key" ]]; then
     log_error "AWS credentials not found in 1Password"
     return 1
@@ -328,7 +328,7 @@ function export_cred_github() {
     return 1
   fi
   local github_op_item="Github Personal Access Token $1"
-  local github_token=$(op item get $github_op_item --fields token)
+  local github_token=$(op item get $github_op_item --fields token --reveal)
   if [[ -z "$github_token" ]]; then
     log_error "Github Personal Access Token not found in 1Password"
     return 1
