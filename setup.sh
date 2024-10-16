@@ -53,7 +53,7 @@ function install_packages() {
     brew install \
       fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
       grep gawk gnu-sed coreutils \
-      ansible pre-commit
+      ansible ansible-lint pre-commit
     sudo softwareupdate --agree-to-license --install-rosetta
     return
   fi
@@ -76,7 +76,7 @@ function install_packages() {
       zsh fd-find bat eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
-      pre-commit ansible @virtualization
+      pre-commit ansible python3-ansible-lint @virtualization
     return
   fi
 
