@@ -13,7 +13,7 @@ option_as_alt = "both"
 normal.family = "Hack Nerd Font"
 size = 14
 
-[shell]
+[terminal.shell]
 program = "/usr/bin/env"
 args = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
 

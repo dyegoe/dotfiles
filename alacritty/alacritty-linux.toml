@@ -12,7 +12,7 @@ dimensions.lines = 50
 normal.family = "Hack Nerd Font"
 size = 12
 
-[shell]
+[terminal.shell]
 program = "/usr/bin/env"
 args = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
 
