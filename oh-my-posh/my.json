@@ -1,94 +1,100 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
-  "version": 2,
-  "final_space": true,
+  "palette": {
+    "aws": "208",
+    "awsBright": "172",
+    "git": "142",
+    "gitBright": "154",
+    "path": "24",
+    "pathBright": "33",
+    "prompt": "127",
+    "promptError": "124",
+    "promptSecondary": "126",
+    "python": "68",
+    "pythonBright": "81"
+  },
+  "secondary_prompt": {
+    "template": "\uf101 ",
+    "foreground": "p:promptSecondary",
+    "background": "transparent"
+  },
+  "transient_prompt": {
+    "template": "\uf105 ",
+    "foreground": "",
+    "background": "transparent",
+    "foreground_templates": [
+      "{{ if gt .Code 0}}p:promptError{{ end }}",
+      "{{ if eq .Code 0}}p:prompt{{ end }}"
+    ]
+  },
   "console_title_template": "{{ .Shell }} in {{ .Folder }}",
   "blocks": [
     {
       "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "type": "path",
-          "style": "plain",
-          "background": "transparent",
           "properties": {
             "style": "full"
           },
-          "template": "<p:pathBright>\uea83  </><p:path>{{ .Path }}</> "
+          "style": "plain",
+          "template": "<p:pathBright>\uea83  </><p:path>{{ .Path }}</> ",
+          "foreground": "",
+          "background": "transparent",
+          "type": "path"
         },
         {
-          "type": "git",
-          "style": "plain",
-          "background": "transparent",
           "properties": {
-            "fetch_status": true,
-            "fetch_upstream_icon": true,
-            "branch_identical_icon": "\udb84\udecc ",
-            "branch_gone_icon": "\udb80\udd64 ",
             "branch_ahead_icon": "\udb82\udf7e ",
             "branch_behind_icon": "\udb82\udf7d ",
-            "branch_icon": "\ue0a0"
+            "branch_gone_icon": "\udb80\udd64 ",
+            "branch_icon": "\ue0a0",
+            "branch_identical_icon": "\udb84\udecc ",
+            "fetch_status": true,
+            "fetch_upstream_icon": true
           },
-          "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> "
+          "style": "plain",
+          "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> ",
+          "foreground": "",
+          "background": "transparent",
+          "type": "git"
         },
         {
-          "type": "aws",
           "style": "plain",
+          "template": "<p:awsBright>\uf0ef</>  <p:aws>{{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }}</> ",
+          "foreground": "",
           "background": "transparent",
-          "template": "<p:awsBright>\uf0ef</>  <p:aws>{{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }}</> "
+          "type": "aws"
         },
         {
-          "type": "python",
           "style": "plain",
+          "template": "<p:pythonBright>\ued1b</> <p:python>{{ .Full }}</> ",
+          "foreground": "",
           "background": "transparent",
-          "template": "<p:pythonBright>\ued1b</> <p:python>{{ .Full }}</> "
+          "type": "python"
         }
-      ]
+      ],
+      "newline": true
     },
     {
       "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "type": "text",
           "style": "plain",
+          "template": "\uf105",
+          "foreground": "",
+          "background": "transparent",
+          "type": "text",
           "foreground_templates": [
             "{{ if gt .Code 0}}p:promptError{{ end }}",
             "{{ if eq .Code 0}}p:prompt{{ end }}"
-          ],
-          "background": "transparent",
-          "template": "\uf105"
+          ]
         }
-      ]
+      ],
+      "newline": true
     }
   ],
-  "transient_prompt": {
-    "foreground_templates": [
-      "{{ if gt .Code 0}}p:promptError{{ end }}",
-      "{{ if eq .Code 0}}p:prompt{{ end }}"
-    ],
-    "background": "transparent",
-    "template": "\uf105 "
-  },
-  "secondary_prompt": {
-    "foreground": "p:promptSecondary",
-    "background": "transparent",
-    "template": "\uf101 "
-  },
-  "palette": {
-    "path": "24",
-    "pathBright": "33",
-    "git": "142",
-    "gitBright": "154",
-    "aws": "208",
-    "awsBright": "172",
-    "python": "68",
-    "pythonBright": "81",
-    "prompt": "127",
-    "promptSecondary": "126",
-    "promptError": "124"
-  }
+  "version": 3,
+  "final_space": true
 }
