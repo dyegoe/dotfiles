@@ -41,7 +41,7 @@ install_commands+="install_oh_my_posh "
 function install_oh_my_posh() {
   log_info "Install oh-my-posh..."
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/JanDeDobbeleer/oh-my-posh/releases/latest) | jq -r '.tag_name')
-  local local_version=v$(command -v oh-my-posh &>/dev/null && oh-my-posh --version || echo "0.0.0")
+  local local_version=v$(command -v oh-my-posh &>/dev/null && oh-my-posh version || echo "0.0.0")
   local download_url="https://github.com/JanDeDobbeleer/oh-my-posh/releases/download/$remote_version/posh-$OS-$ARCH"
   local bin_name="oh-my-posh"
   if [[ "$remote_version" == "$local_version" ]]; then
