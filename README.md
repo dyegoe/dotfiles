@@ -1,14 +1,31 @@
 # Dotfiles
 
-## Fedora 40
+## Fedora 41
 
 ### Installation
 
-- Select `English (United Kingdom)` as language
-- Select the keyboard: `English (US, intl., with dead keys)`
-- Select the disks and select custom.
-- Select a volume or add a new partition, label it as `fedora` and assign `/` as a mount point.
-- Select the EFI partition and mount as `/boot/efi`.
+- Select `English (United Kingdom)` as the language
+- Click `Continue`
+- Click on `Keyboard`
+  - Click on `+`
+  - Add `English (US, intl., with dead keys)`
+  - Select the previous keyboard, `English (UK)`
+  - Click on `-` to remove
+  - Click `Done`
+- Click on `Installation Destination`
+  - Select the disks (or disk if you have one). In my specific case, I have two disks. One has Windows and holds the EFI.
+  - For `Storage Configuration`, select `Advanced Custom (Blivet-GUI)`
+  - Click `Done`
+  - Select the disk with an existing EFI partition (my case is Gigabyte).
+  - Select the EFI partition and set the mount point as `/boot/efi`
+  - Select the disk where Fedora will be installed (my case is Kingston).
+  - If there is a partition, remove it (click on `(x)`)
+  - Click on `x` to add a partition
+    - Filesystem: `ext4`
+    - Label: `fedora`
+    - Mount point: `/`
+    - Click `OK`.
+  - Click `Done`
 - Begin installation
 
 ### Post Installation
