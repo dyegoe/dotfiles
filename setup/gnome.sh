@@ -7,14 +7,6 @@ function setup_gnome_settings() {
     return
   fi
 
-  log_info "  Setting up Gnome Terminal settings..."
-  local profile=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/visible-name "'Default'"
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/use-system-font false
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/font "'Hack Nerd Font 11'"
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-columns "140"
-  dconf write /org/gnome/terminal/legacy/profiles:/:${profile}/default-size-rows "75"
-
   log_info "  Setting up Gnome custom keybindings..."
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
   dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'Open Terminal'"
