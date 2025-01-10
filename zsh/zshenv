@@ -123,3 +123,8 @@ if [[ "$OS" == "darwin" ]]; then
   export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 fi
 export FPATH="$ZDOTDIR/functions:$FPATH"
+
+# ##### Load work only vars #####
+if [[ -f "$ZDOTDIR/work.env" ]]; then
+  source "$ZDOTDIR/work.env"
+fi
