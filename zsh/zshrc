@@ -66,13 +66,14 @@ fi
 if command -v fzf &>/dev/null; then
   eval "$(fzf --zsh)"
 
-  _fzf_compgen_path() {
-    fd -H -E .git -E .cache -E . -E .config "$1"
+  # the following functions are used when **+tab is pressed
+  _fzf_compgen_path() { # files
+    fd -H -E .git -E .cache -E . -E .config . "$1"
   }
-  _fzf_compgen_dir() {
-    fd -H -E .git -E .cache -E . -E .config -t d "$1"
+  _fzf_compgen_dir() { # directories
+    fd -H -E .git -E .cache -E . -E .config -t d . "$1"
   }
-  _fzf_comprun() {
+  _fzf_comprun() { # to select which preview use based on the command.
     local command=$1
     shift
 
