@@ -112,8 +112,6 @@ fi
 # ##### Terraform #####
 export TENV_ROOT="$XDG_CONFIG_HOME/tenv"
 export TENV_AUTO_INSTALL=true
-#export TERRAGRUNT_TFPATH=terraform
-export TENV_DETACHED_PROXY=false
 
 # ##### Path #####
 export PATH="$LOCAL_BIN:$PATH"
@@ -123,6 +121,7 @@ if [[ "$OS" == "darwin" ]]; then
   export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 fi
 export FPATH="$ZDOTDIR/functions:$FPATH"
+export PATH="$PATH:$HOME/.rvm/bin"
 
 # ##### Load work only vars #####
 if [[ -f "$ZDOTDIR/work.env" ]]; then
