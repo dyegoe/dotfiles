@@ -5,8 +5,8 @@ TERM = "xterm-256color"
 opacity = 0.9
 padding.x = 10
 padding.y = 10
-dimensions.columns = 126
-dimensions.lines = 50
+dimensions.columns = 180
+dimensions.lines = 55
 option_as_alt = "both"
 
 [font]
