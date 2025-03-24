@@ -50,6 +50,13 @@
             "branch_gone_icon": "\udb80\udd64 ",
             "branch_icon": "\ue0a0",
             "branch_identical_icon": "\udb84\udecc ",
+            "commit_icon": "\uf417 ",
+            "tag_icon": "\uf412 ",
+            "rebase_icon": "\ue728 ",
+            "cherry_pick_icon": "\ue29B ",
+            "revert_icon": "\uf0E2 ",
+            "merge_icon": "\ue727 ",
+            "no_commits_icon": "\uf594 ",
             "fetch_status": true,
             "fetch_upstream_icon": true
           },
