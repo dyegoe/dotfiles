@@ -6,7 +6,7 @@ opacity = 0.85
 padding.x = 10
 padding.y = 10
 dimensions.columns = 126
-dimensions.lines = 50
+dimensions.lines = 71
 
 [font]
 normal.family = "Hack Nerd Font"
