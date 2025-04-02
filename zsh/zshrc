@@ -101,3 +101,8 @@ fi
 if command -v oh-my-posh &>/dev/null; then
   eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/my.json)"
 fi
+
+# ##### Load work only zsh #####
+if [[ -f "$ZDOTDIR/work.zsh" ]]; then
+  source "$ZDOTDIR/work.zsh"
+fi
