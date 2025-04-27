@@ -71,18 +71,17 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
 #### Setup 1Password
 
 - Open 1Password and sign in
-- Setup SSH Agent
-  - Open 1Password
-  - Go Settings
-  - Developer
-  - Setup SSH Agent
-  - Use the Key Names
-  - Select "Edit Automatically"
-  - Close
-- Setup CLI
-  - Enable "Command-Line Interface (CLI)" option under Developer (as above)
-  - `op signin`
-  - If you forgot to enable the option, 1Password will prompt you to do so.
+- Open 1Password
+- Click `...` on left top side
+- Select `Settings`
+- Select `Developer`
+- Mark `Use the SSH Agent`
+- It opens a new window. Select `Use the Key Names`
+- Scroll down. Mark `Integrate with 1Password CLI`
+- Close the window
+- Open a terminal
+- `op signin`
+- Click `Authorize`
 
 ## MacOS
 
