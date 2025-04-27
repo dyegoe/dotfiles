@@ -59,7 +59,7 @@
 - `./setup.sh full`
 - Wait for the installation to finish. Akmmod will build the driver for the current kernel.
   - `while true; do sudo ps aux |grep akmods |grep -v grep; sleep 1; echo '#####'; done` until the process is finished.
-- `reboot`
+- Restart the system
 - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
 
 Node: The `setup.sh` script is unable to enable the `gnome-extensions` in a single run. To enable the extensions, run the following command:

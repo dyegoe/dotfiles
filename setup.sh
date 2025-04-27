@@ -71,7 +71,6 @@ function install_packages() {
     fi
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_info "  Installing packages using dnf..."
-    # retired: nvidia-vaapi-driver
     sudo dnf --setopt=install_weak_deps=False -y install \
       akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo \
       zsh fd-find bat zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \

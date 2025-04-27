@@ -29,7 +29,7 @@ function setup_gnome_settings() {
 }
 
 # ##### Install Gnome extensions #####
-# install_commands+="install_gnome_extensions "
+install_commands+="install_gnome_extensions "
 function install_gnome_extensions() {
   log_info "Install gnome-extensions..."
   # darwin
@@ -40,8 +40,8 @@ function install_gnome_extensions() {
 
   # anything else
   local gnome_version=$(gnome-shell --version | sed -n 's/^GNOME Shell \([0-9]\+\)\..*/\1/p')
+  # Retired extensions: "appindicatorsupport@rgcjonas.gmail.com"
   local gnome_extensions=(
-    "appindicatorsupport@rgcjonas.gmail.com"
     "gTile@vibou"
   )
   for gnome_extension_id in ${gnome_extensions[@]}; do
