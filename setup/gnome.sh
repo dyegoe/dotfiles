@@ -29,7 +29,7 @@ function setup_gnome_settings() {
 }
 
 # ##### Install Gnome extensions #####
-install_commands+="install_gnome_extensions "
+# install_commands+="install_gnome_extensions "
 function install_gnome_extensions() {
   log_info "Install gnome-extensions..."
   # darwin
