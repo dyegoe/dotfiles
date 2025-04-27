@@ -50,12 +50,15 @@
 - Click `Start Using Fedora Linux`
 - Skip the `Welcome Tour`
 - Open a terminal
-- `sudo dnf install -y git`
+- You might have some updates available. Although the script will upgrade, it is good idea to do it manually and avoid issues when installing the new packages.
+- `sudo dnf upgrade --refresh -y`
+- If any package is updated, it is a good idea to reboot the system.
+- `sudo dnf install -y git` (most likely already installed)
 - `git clone https://github.com/dyegoe/dotfiles.git $HOME/dotfiles`
 - `cd dotfiles`
 - `./setup.sh full`
 - Wait for the installation to finish. Akmmod will build the driver for the current kernel.
-  - `sudo ps aux |grep akmods |grep -v grep` until the process is finished.
+  - `while true; do sudo ps aux |grep akmods |grep -v grep; sleep 1; echo '#####'; done` until the process is finished.
 - `reboot`
 - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
 
