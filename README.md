@@ -1,37 +1,54 @@
 # Dotfiles
 
-## Fedora 41
+## Fedora 42
 
 ### Installation
 
-- Select `English (United Kingdom)` as the language
-- Click `Continue`
-- Click on `Keyboard`
-  - Click on `+`
-  - Add `English (US, intl., with dead keys)`
-  - Select the previous keyboard, `English (UK)`
-  - Click on `-` to remove
-  - Click `Done`
-- Click on `Installation Destination`
-  - Select the disks (or disk if you have one). In my specific case, I have two disks. One has Windows and holds the EFI.
-  - For `Storage Configuration`, select `Advanced Custom (Blivet-GUI)`
-  - Click `Done`
-  - Select the disk with an existing EFI partition (my case is Gigabyte).
-  - Select the EFI partition and set the mount point as `/boot/efi`
-  - Select the disk where Fedora will be installed (my case is Kingston).
-  - If there is a partition, remove it (click on `(x)`)
-  - Click on `x` to add a partition
-    - Filesystem: `ext4`
-    - Label: `fedora`
-    - Mount point: `/`
-    - Click `OK`.
-  - Click `Done`
-- Begin installation
+- For Language: Select `English (United Kingdom)`
+- For Keyboard: `Change system keyboard layout`
+  - Click `+ Add Input Source`
+  - Click `English (United States)`
+  - Select `English (US, intl., with dead keys)`
+  - Select the previous keyboard, `English (US)`
+  - Click `...` and `Remove`
+  - Close `X`
+- Click `Next`
+- Click on `Change Destination`
+  - Select the disks (or disk if you have one). In my specific case, I have two disks:
+    - Gigabyte (SSD) nvme0n1
+    - Kingston (SSD) nvme1n1
+  - Select `Mount point assignment`
+  - Click `Next`
+  - For `/` Mount point, select the disk where Fedora will be installed: `nvme1n1p1`
+    - Ensure that the `Reformat` switch is on.
+  - For `/boot/efi` Mount point, select the disk with an existing EFI partition: `nvme0n1p1`
+  - For `/boot` Mount point, click on the trash icon to remove it.
+  - Click `Next`
+  - Check the `I understand that some existing data will be erased`
+  - Click `Apply mount point assignment and install`
+- Click `Exit to live desktop`
+- And restart the system
 
 ### Post Installation
 
 - Start Setup
-- Enable third-party packages
+- `English (United Kingdom)` should be already selected
+- Click `Next`
+- `English (US, intl., with dead keys)` should be already selected
+- Click `Next`
+- `Location Services` should be already on
+- `Automatic Problem Reporting` should be already on
+- Click `Next`
+- Search for your Time Zone
+- Click `Next`
+- Click `Enable Third-Party Repositories`
+- Click `Next`
+- Fill in your `Full Name`, `Username`
+- Click `Next`
+- Fill in your `Password`, and `Confirm Password`
+- Click `Next`
+- Click `Start Using Fedora Linux`
+- Skip the `Welcome Tour`
 - Open a terminal
 - `sudo dnf install -y git`
 - `git clone https://github.com/dyegoe/dotfiles.git $HOME/dotfiles`
