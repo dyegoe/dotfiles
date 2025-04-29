@@ -15,6 +15,10 @@ function setup_system() {
 
   # Configure DNF to retain only 2 kernels
   log_info "  Configuring DNF to retain only 2 kernels..."
-  sudo sed -i 's/^installonly_limit=.*/installonly_limit=2/' /etc/dnf/dnf.conf || echo "installonly_limit=2" | sudo tee -a /etc/dnf/dnf.conf
+  if grep -q '^installonly_limit=' /etc/dnf/dnf.conf; then
+    sudo sed -i 's/^installonly_limit=.*/installonly_limit=2/' /etc/dnf/dnf.conf
+  else
+    echo "installonly_limit=2" | sudo tee -a /etc/dnf/dnf.conf >/dev/null
+  fi
   log_info "  DNF configuration updated successfully."
 }
