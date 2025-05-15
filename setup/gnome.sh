@@ -43,6 +43,7 @@ function install_gnome_extensions() {
   # Retired extensions: "appindicatorsupport@rgcjonas.gmail.com"
   local gnome_extensions=(
     "gTile@vibou"
+    "appindicatorsupport@rgcjonas.gmail.com"
   )
   for gnome_extension_id in ${gnome_extensions[@]}; do
     log_info "  installing $gnome_extension_id..."
