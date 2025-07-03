@@ -37,6 +37,24 @@ function upgrade_system() {
   log_info "$OS/$DISTRO is not supported... System upgrade skipped..."
 }
 
+# ##### Setup NVIDIA #####
+function install_nvidia() {
+  log_info "Setup NVIDIA..."
+  if [[ "$OS" != "linux" || "$DISTRO" != "fedora" ]]; then
+    log_info "  $OS/$DISTRO doesn't support NVIDIA setup... skipped..."
+    return
+  fi
+
+  if [[ -f ~/.nonvidia ]]; then
+    log_info "  ~/.nonvidia exists, skipping NVIDIA setup..."
+    return
+  fi
+
+  log_info "  Installing NVIDIA drivers..."
+  sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo
+  log_info "  NVIDIA drivers installed successfully."
+}
+
 # ##### Install packages #####
 function install_packages() {
   log_info "Install packages..."
@@ -72,7 +90,6 @@ function install_packages() {
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_info "  Installing packages using dnf..."
     sudo dnf --setopt=install_weak_deps=False -y install \
-      akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo \
       zsh fd-find bat zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
@@ -90,6 +107,7 @@ done
 
 # ##### full #####
 function full() {
+  install_nvidia
   install_packages
   upgrade_system
   setup

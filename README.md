@@ -52,8 +52,11 @@
 - Open a terminal
 - You might have some updates available. Although the script will upgrade, it is good idea to do it manually and avoid issues when installing the new packages.
 - `sudo dnf upgrade --refresh -y`
-- If any package is updated, it is a good idea to reboot the system.
+- If any package is updated, it is a good idea to **reboot** the system.
 - `sudo dnf install -y git` (most likely already installed)
+- **Important**, before continuing, ensure that if your new system has no windows or nvidia video card, you create the followig files to skip the installation.
+  - `touch $HOME/.nonvidia`
+  - `touch $HOME/.nowindows`
 - `git clone https://github.com/dyegoe/dotfiles.git $HOME/dotfiles`
 - `cd dotfiles`
 - `./setup.sh full`
@@ -119,4 +122,5 @@ And under the `~/git/work/` directory, create `.gitconfig` file with smilar cont
 
 ### Git Credentials
 
+[Git Credentials](https://git-scm.com/docs/gitcredentials)
 [Git Credentials](https://git-scm.com/docs/gitcredentials)

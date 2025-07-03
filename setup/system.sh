@@ -8,10 +8,15 @@ function setup_system() {
   fi
 
   # Update GRUB configuration
-  log_info "  Updating GRUB configuration..."
-  sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=3/' /etc/default/grub
-  sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-  log_info "  GRUB configuration updated successfully."
+  log_info "  Checking GRUB configuration..."
+  if [[ -f ~/.nowindows ]]; then
+    log_info "  ~/.nowindows exists, skipping GRUB configuration..."
+  else
+    log_info "  Updating GRUB configuration..."
+    sudo sed -i 's/^GRUB_DEFAULT=.*/GRUB_DEFAULT=3/' /etc/default/grub
+    sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+    log_info "  GRUB configuration updated successfully."
+  fi
 
   # Configure DNF to retain only 2 kernels
   log_info "  Configuring DNF to retain only 2 kernels..."
