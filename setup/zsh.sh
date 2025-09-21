@@ -3,7 +3,14 @@ setup_commands+="setup_zsh "
 function setup_zsh() {
   log_info "Setup ZSH..."
   # zshenv
-  local zshenv_symlink=$HOME/.zshenv
+  
+  # On macOS, place .zshenv under $ZDOTDIR; on others, place it in $HOME
+  local zshenv_symlink
+  if [[ "$OS" == "darwin" ]]; then
+    zshenv_symlink=$ZDOTDIR/.zshenv
+  else
+    zshenv_symlink=$HOME/.zshenv
+  fi
   local zshenv_origin=$SCRIPT_DIR/zsh/zshenv
 
   if [[ -f $zshenv_symlink ]] && [[ ! -L $zshenv_symlink ]]; then
