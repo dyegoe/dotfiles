@@ -1,4 +1,6 @@
 #!/usr/bin/env zsh
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh"
 
 # ##### Completion #####
 zstyle ':completion:*' completer _expand _complete _ignored _approximate
@@ -106,3 +108,6 @@ fi
 if [[ -f "$ZDOTDIR/work.zsh" ]]; then
   source "$ZDOTDIR/work.zsh"
 fi
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"

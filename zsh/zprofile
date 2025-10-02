@@ -1,4 +1,6 @@
 #!/usr/bin/env zsh
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zprofile.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zprofile.pre.zsh"
 
 # ##### Home Brew on MacOS #####
 if [[ "$OS" == "darwin" ]]; then
@@ -10,3 +12,6 @@ if [[ "$OS" == "linux" ]]; then
   gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
   gnome-extensions enable gTile@vibou
 fi
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zprofile.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zprofile.post.zsh"
