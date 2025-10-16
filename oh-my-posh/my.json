@@ -20,7 +20,6 @@
   },
   "transient_prompt": {
     "template": "\uf105 ",
-    "foreground": "",
     "background": "transparent",
     "foreground_templates": [
       "{{ if gt .Code 0}}p:promptError{{ end }}",
@@ -39,7 +38,6 @@
           },
           "style": "plain",
           "template": "<p:pathBright>\uea83  </><p:path>{{ .Path }}</> ",
-          "foreground": "",
           "background": "transparent",
           "type": "path"
         },
@@ -62,21 +60,18 @@
           },
           "style": "plain",
           "template": "<p:gitBright>{{ .UpstreamIcon }}</> <p:git>{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}</> ",
-          "foreground": "",
           "background": "transparent",
           "type": "git"
         },
         {
           "style": "plain",
           "template": "<p:awsBright>\uf0ef</>  <p:aws>{{ .Profile }}{{ if .Region }}@{{ .Region }}{{ end }}</> ",
-          "foreground": "",
           "background": "transparent",
           "type": "aws"
         },
         {
           "style": "plain",
           "template": "<p:pythonBright>\ued1b</> <p:python>{{ .Full }}</> ",
-          "foreground": "",
           "background": "transparent",
           "type": "python"
         }
@@ -90,7 +85,6 @@
         {
           "style": "plain",
           "template": "\uf105",
-          "foreground": "",
           "background": "transparent",
           "type": "text",
           "foreground_templates": [
