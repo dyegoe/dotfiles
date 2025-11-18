@@ -7,3 +7,7 @@ Host *
   PubkeyAcceptedAlgorithms +ssh-rsa
   IdentityAgent ~/.1password/agent.sock
 
+ Host node1
+  Hostname node1.nodes.ee
+ Host node2
+  Hostname node2.nodes.ee
