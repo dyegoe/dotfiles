@@ -335,7 +335,7 @@ function export_cred_github() {
     log_error "Github Personal Access Token not found in 1Password"
     return 1
   fi
-  export GITHUB_TOKEN=$github_token &&
+  export GITHUB_TOKEN=$github_token GIT_TOKEN=$github_token &&
     log_info "Github Personal Access Token exported"
   if command -v tenv &>/dev/null; then
     export TENV_GITHUB_TOKEN=$github_token &&
