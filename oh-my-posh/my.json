@@ -33,7 +33,7 @@
       "alignment": "left",
       "segments": [
         {
-          "properties": {
+          "options": {
             "style": "full"
           },
           "style": "plain",
@@ -42,7 +42,7 @@
           "type": "path"
         },
         {
-          "properties": {
+          "options": {
             "branch_ahead_icon": "\udb82\udf7e ",
             "branch_behind_icon": "\udb82\udf7d ",
             "branch_gone_icon": "\udb80\udd64 ",
