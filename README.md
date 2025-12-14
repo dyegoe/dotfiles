@@ -1,6 +1,6 @@
 # Dotfiles
 
-## Fedora 42
+## Fedora 43
 
 ### Installation
 
@@ -19,9 +19,9 @@
     - Kingston (SSD) nvme1n1
   - Select `Mount point assignment`
   - Click `Next`
-  - For `/` Mount point, select the disk where Fedora will be installed: `nvme1n1p1`
+  - For `/` Mount point, select the disk where Fedora will be installed: e.g. `nvme0n1p1`
     - Ensure that the `Reformat` switch is on.
-  - For `/boot/efi` Mount point, select the disk with an existing EFI partition: `nvme0n1p1`
+  - For `/boot/efi` Mount point, select the disk with an existing EFI partition: e.g. `nvme1n1p1`
   - For `/boot` Mount point, click on the trash icon to remove it.
   - Click `Next`
   - Check the `I understand that some existing data will be erased`
@@ -39,7 +39,7 @@
 - `Location Services` should be already on
 - `Automatic Problem Reporting` should be already on
 - Click `Next`
-- Search for your Time Zone
+- Select your location on the map (ONLY select in the map! There is a bug where searching crashes the installer)
 - Click `Next`
 - Click `Enable Third-Party Repositories`
 - Click `Next`
@@ -58,12 +58,15 @@
   - `touch $HOME/.nonvidia`
   - `touch $HOME/.nowindows`
 - `git clone https://github.com/dyegoe/dotfiles.git $HOME/dotfiles`
-- `cd dotfiles`
-- `./setup.sh full`
+- `$HOME/dotfiles/setup.sh install_nvidia`
 - Wait for the installation to finish. Akmmod will build the driver for the current kernel.
   - `while true; do sudo ps aux |grep akmods |grep -v grep; sleep 1; echo '#####'; done` until the process is finished.
 - Restart the system
 - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
+- `$HOME/dotfiles/setup.sh install_packages`
+- `$HOME/dotfiles/setup.sh upgrade_system`
+- `$HOME/dotfiles/setup.sh setup`
+- `$HOME/dotfiles/setup.sh install`
 
 Node: The `setup.sh` script is unable to enable the `gnome-extensions` in a single run. To enable the extensions, run the following command:
 
