@@ -29,6 +29,10 @@ if command -v argocd &>/dev/null; then
   compdef _argocd argocd
 fi
 
+if command -v op &>/dev/null; then
+  eval "$(op completion zsh)"; compdef _op op
+fi
+
 # ##### Keybindings #####
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
