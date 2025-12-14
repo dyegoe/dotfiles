@@ -24,6 +24,11 @@ if command -v aws_completer &>/dev/null; then
   complete -C aws_completer aws
 fi
 
+if command -v argocd &>/dev/null; then
+  source <(argocd completion zsh)
+  compdef _argocd argocd
+fi
+
 # ##### Keybindings #####
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
