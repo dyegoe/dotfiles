@@ -81,7 +81,7 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
 - Click `...` on left top side
 - Select `Settings`
 - Select `Developer`
-- Mark `Use the SSH Agent`
+- Mark `Set up the SSH Agent`
 - It opens a new window. Select `Use the Key Names`
 - Scroll down. Mark `Integrate with 1Password CLI`
 - Close the window
