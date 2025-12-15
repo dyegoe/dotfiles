@@ -34,7 +34,8 @@
       "segments": [
         {
           "options": {
-            "style": "full"
+            "style": "agnoster_short",
+            "max_depth": 3
           },
           "style": "plain",
           "template": "<p:pathBright>\uea83  </><p:path>{{ .Path }}</> ",
