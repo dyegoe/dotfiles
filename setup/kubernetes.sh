@@ -100,3 +100,24 @@ function install_k9s() {
   download_tar_gz_local_bin $download_url $bin_name
   log_info "  installed..."
 }
+
+function install_kubeseal() {
+  log_info "Install kubeseal..."
+  local remote_version=$(echo $(_curl_github https://api.github.com/repos/bitnami-labs/sealed-secrets/releases/latest) | jq -r '.tag_name')
+  local local_version=$(command -v kubeseal &>/dev/null && kubeseal --version | awk '{print $3}' || echo "v0.0.0")
+  local download_url="https://github.com/bitnami-labs/sealed-secrets/releases/download/$remote_version/kubeseal-${remote_version#v}-$OS-$ARCH.tar.gz"
+  local bin_name="kubeseal"
+  if [[ "$remote_version" == "$local_version" ]]; then
+    log_info "  is up to date..."
+    return
+  fi
+  log_info "  installing..."
+  # This downloads a tar.gz containing kubeseal binary
+  local temp_dir=$(mktemp -d)
+  mkdir -p $temp_dir
+  $CURL_CMD -L -o $temp_dir/download.tar.gz $download_url
+  tar -C $temp_dir -xzf $temp_dir/download.tar.gz
+  mv $temp_dir/kubeseal $LOCAL_BIN/$bin_name
+  rm -rf $temp_dir
+  log_info "  installed..."
+}
