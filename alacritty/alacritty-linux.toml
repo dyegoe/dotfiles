@@ -5,8 +5,8 @@ TERM = "xterm-256color"
 opacity = 0.9
 padding.x = 10
 padding.y = 10
-dimensions.columns = 126
-dimensions.lines = 71
+dimensions.columns = 160
+dimensions.lines = 70
 
 [font]
 normal.family = "Hack Nerd Font"
