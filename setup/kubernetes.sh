@@ -2,6 +2,7 @@
 setup_commands+="setup_kubernetes "
 function setup_kubernetes() {
   setup_kubectl
+  setup_netshoot
 }
 
 function setup_kubectl() {
@@ -11,6 +12,17 @@ function setup_kubectl() {
     mkdir -p $ZDOTDIR/functions
     kubectl completion zsh >$kubectl_completion_file
     chmod 755 $kubectl_completion_file
+    log_info "  setup done..."
+  fi
+}
+
+function setup_netshoot() {
+  if command -v kubectl-netshoot &>/dev/null; then
+    local netshoot_completion_file="$ZDOTDIR/functions/_kubectl-netshoot"
+    log_info "Setup netshoot..."
+    mkdir -p $ZDOTDIR/functions
+    kubectl-netshoot completion zsh >$netshoot_completion_file
+    chmod 755 $netshoot_completion_file
     log_info "  setup done..."
   fi
 }
