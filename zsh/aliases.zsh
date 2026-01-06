@@ -137,9 +137,9 @@ function export_cred() {
   if [[ "$1" == "help" ]]; then
     printf "Usage: ec <service>\n"
     printf "\n"
-    printf "Available services: gitlab, cloudflare, proxmox, ssh, vault, aws, all\n"
+    printf "Available services: gitlab, cloudflare, proxmox, ssh, vault, aws, github, all\n"
     printf "\n"
-    printf "The 'all' argument will export all available services but not AWS.\n"
+    printf "The 'all' argument will gitlab, cloudflare, github.\n"
     return 0
   fi
   if [[ -z "$1" ]]; then
@@ -149,9 +149,7 @@ function export_cred() {
   if [[ "$1" == "all" ]]; then
     export_cred_gitlab
     export_cred_cloudflare
-    export_cred_proxmox
-    export_cred_ssh
-    export_cred_vault
+    export_cred_github cli_api
     return 0
   fi
   local service=$1
