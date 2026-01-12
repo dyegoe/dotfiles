@@ -25,7 +25,7 @@ function setup_gnome_settings() {
   dconf write /org/gnome/desktop/interface/toolbar-icons-size "'small'"
 
   log_info "  Setting up Gnome favorite apps..."
-  dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'Alacritty.desktop', 'code.desktop', 'slack.desktop', '1password.desktop']"
+  dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'Alacritty.desktop', 'code.desktop', 'antigravity.desktop', 'slack.desktop', '1password.desktop']"
 }
 
 # ##### Install Gnome extensions #####
