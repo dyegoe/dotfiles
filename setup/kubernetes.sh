@@ -27,6 +27,17 @@ function setup_netshoot() {
   fi
 }
 
+function setup_helm() {
+  if command -v helm &>/dev/null; then
+    local helm_completion_file="$ZDOTDIR/functions/_helm"
+    log_info "Setup helm..."
+    mkdir -p $ZDOTDIR/functions
+    helm completion zsh >$helm_completion_file
+    chmod 755 $helm_completion_file
+    log_info "  setup done..."
+  fi
+}
+
 # ##### Install kubernetes #####
 install_commands+="install_kubernetes "
 function install_kubernetes() {

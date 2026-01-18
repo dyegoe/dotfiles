@@ -69,7 +69,7 @@ function install_packages() {
     # because darwin already has zsh, we don't install it
     log_info "  Installing packages using brew..."
     brew install \
-      fd bat fzf eza zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
+      fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty \
       grep gawk gnu-sed coreutils \
       ansible ansible-lint pre-commit
     sudo softwareupdate --agree-to-license --install-rosetta
@@ -90,7 +90,7 @@ function install_packages() {
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_info "  Installing packages using dnf..."
     sudo dnf --setopt=install_weak_deps=False -y install \
-      zsh fd-find bat zoxide ripgrep jq tmux xclip xsel vim pwgen alacritty \
+      zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
       pre-commit ansible python3-ansible-lint @virtualization
