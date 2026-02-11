@@ -15,6 +15,9 @@ alias ls='eza --icons --git'
 # ##### Bat #####
 alias cat='bat -pp'
 
+# ##### Vim #####
+alias vi='vim'
+
 # ##### Git #####
 # Copied from https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/git.zsh
 function git_current_branch() {
