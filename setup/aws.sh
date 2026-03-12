@@ -20,9 +20,9 @@ function install_awscli() {
   log_info "Install aws session manager plugin..."
   if [[ "$OS" == "darwin" ]]; then
     log_info "  installing..."
-    $CURL_CMD -o $temp_dir/sessionmanager-bundle.zip https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_${ARCHM}/sessionmanager-bundle.zip
-    $UNZIP_CMD $temp_dir $temp_dir/sessionmanager-bundle.zip
-    sudo $temp_dir/sessionmanager-bundle/install -i /usr/local/sessionmanagerplugin -b /usr/local/bin/session-manager-plugin
+    $CURL_CMD -o $temp_dir/session-manager-plugin.pkg https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac/session-manager-plugin.pkg
+    sudo installer -pkg $temp_dir/session-manager-plugin.pkg -target /
+    sudo ln -sf /usr/local/sessionmanagerplugin/bin/session-manager-plugin /usr/local/bin/session-manager-plugin
     log_info "  installed..."
   fi
   if [[ "$OS" == "linux" && "$DISTRO" == "fedora" ]]; then
