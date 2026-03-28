@@ -140,7 +140,7 @@ function export_cred() {
   if [[ "$1" == "help" ]]; then
     printf "Usage: ec <service>\n"
     printf "\n"
-    printf "Available services: gitlab, cloudflare, proxmox, ssh, vault, aws, github, all\n"
+    printf "Available services: gitlab, cloudflare, ssh, aws, github, all\n"
     printf "\n"
     printf "The 'all' argument will gitlab, cloudflare, github.\n"
     return 0
@@ -169,8 +169,8 @@ function export_cred_gitlab() {
   if ! _check_op; then
     return 1
   fi
-  local gitlab_user=$(op item get ijy23npdfhkrjc54ntffjekr5a --fields username --reveal)
-  local gitlab_token=$(op item get hsn4rskbnen4g3m5lqb4totaou --fields token --reveal)
+  local gitlab_user=$(op item get "GitLab" --fields username --reveal)
+  local gitlab_token=$(op item get "GitLab Token - dyegoe terraform" --fields token --reveal)
   if [[ -z "$gitlab_user" || -z "$gitlab_token" ]]; then
     log_error "Gitlab credentials not found in 1Password"
     return 1
@@ -186,8 +186,8 @@ function export_cred_cloudflare() {
   if ! _check_op; then
     return 1
   fi
-  local cloudflare_account_id=$(op item get neo3orqoubdi5ilhx4yauzgww4 --fields 'account ID' --reveal)
-  local cloudflare_api_token=$(op item get dgmyyo2fzipvx3qhpm7qgljux4 --fields credential --reveal)
+  local cloudflare_account_id=$(op item get "Cloudflare" --fields 'account ID' --reveal)
+  local cloudflare_api_token=$(op item get "cloudflare-terraform"  --fields credential --reveal)
   if [[ -z "$cloudflare_account_id" || -z "$cloudflare_api_token" ]]; then
     log_error "Cloudflare credentials not found in 1Password"
     return 1
@@ -197,53 +197,19 @@ function export_cred_cloudflare() {
   return 0
 }
 
-# ##### Export proxmox credentials #####
-alias ecproxmox='export_cred_proxmox'
-function export_cred_proxmox() {
-  if ! _check_op; then
-    return 1
-  fi
-  local proxmox_user=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields username --reveal)
-  local proxmox_password=$(op item get ahcroyqbhvlxksnilqgw73gynq --fields password --reveal)
-  if [[ -z "$proxmox_user" || -z "$proxmox_password" ]]; then
-    log_error "Proxmox credentials not found in 1Password"
-    return 1
-  fi
-  export TF_VAR_proxmox_user="${proxmox_user}@pam" TF_VAR_proxmox_password=$proxmox_password &&
-    log_info "Proxmox credentials exported"
-  return 0
-}
-
 # ##### Export ssh public key #####
 alias ecssh='export_cred_ssh'
 function export_cred_ssh() {
   if ! _check_op; then
     return 1
   fi
-  local ssh_public_key=$(op item get josurj44uxonxdvlk5mgk7hcvy --fields 'public key' --reveal)
+  local ssh_public_key=$(op item get "SSH Key dyegoe@gmail.com" --fields 'public key' --reveal)
   if [[ -z "$ssh_public_key" ]]; then
     log_error "SSH public key not found in 1Password"
     return 1
   fi
   export TF_VAR_ssh_public_key=$ssh_public_key &&
     log_info "SSH public key exported"
-  return 0
-}
-
-# ##### Export vault credentials #####
-alias ecvault='export_cred_vault'
-function export_cred_vault() {
-  if ! _check_op; then
-    return 1
-  fi
-  local vault_addr=$(op item get sjohltwhbvcdin62uranbih3ay --fields hostname --reveal)
-  local vault_token=$(op item get sjohltwhbvcdin62uranbih3ay --fields credential --reveal)
-  if [[ -z "$vault_addr" || -z "$vault_token" ]]; then
-    log_error "Vault credentials not found in 1Password"
-    return 1
-  fi
-  export VAULT_ADDR=$vault_addr VAULT_TOKEN=$vault_token &&
-    log_info "Vault credentials exported"
   return 0
 }
 
