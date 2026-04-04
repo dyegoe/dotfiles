@@ -46,7 +46,7 @@ install_commands+="install_cilium_hubble "
 function install_cilium_hubble() {
   log_info "Install cilium hubble..."
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/cilium/hubble/releases/latest) | jq -r '.tag_name')
-  local local_version=$(command -v hubble &>/dev/null && hubble version | grep Client | awk '{print $3}' || echo "v0.0.0")
+  local local_version=$(command -v hubble &>/dev/null && hubble version | grep hubble | awk '{print $2}' | cut -d@ -f1  || echo "v0.0.0")
   local download_url="https://github.com/cilium/hubble/releases/download/$remote_version/hubble-$OS-$ARCH.tar.gz"
   local bin_name="hubble"
   if [[ "$remote_version" == "$local_version" ]]; then
