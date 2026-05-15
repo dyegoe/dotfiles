@@ -1,8 +1,5 @@
 #!/usr/bin/env zsh
 
-# ##### Locale #####
-export TERM='rxvt-256color'
-
 # ##### Set OS / Distro #####
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 OSS=$(uname -s)

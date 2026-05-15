@@ -18,3 +18,8 @@ args = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
 
 [scrolling]
 history = 10000
+
+[colors.cursor]
+cursor = "#b4befe"
+text = "#1e1e2e"
+

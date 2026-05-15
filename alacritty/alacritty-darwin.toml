@@ -25,3 +25,8 @@ bindings = [
   { key = "Right", mods = "Alt", chars = "\u001BF" },
   { key = "Left", mods = "Alt", chars = "\u001BB" },
 ]
+
+[colors.cursor]
+cursor = "#b4befe"
+text = "#1e1e2e"
+
