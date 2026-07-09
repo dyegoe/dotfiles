@@ -1,0 +1,17 @@
+[user]
+  name = Dyego Alexandre Eugenio
+  email = dyego.eugenio@neocredito.com.br
+  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsujr67kEC5GE3CaBKi4DJ+ydfedupkErrfqj4zmNkr
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/opt/1Password/op-ssh-sign"
+
+[commit]
+  gpgsign = true
+
+[core]
+  sshCommand = "ssh -o IdentitiesOnly=yes -i ~/.ssh/neocredito.pub"
+

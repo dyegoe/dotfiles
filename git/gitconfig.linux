@@ -17,3 +17,6 @@
 
 [init]
 	defaultBranch = main
+
+[includeIf "gitdir:~/git/gitlab.com/neocredito-org/"]
+  path = ~/git/gitlab.com/neocredito-org/.gitconfig
