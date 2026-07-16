@@ -30,6 +30,7 @@ function install_terraform_docs() {
   log_info "Install terraform-docs..."
   local remote_version=$(echo $(_curl_github https://api.github.com/repos/terraform-docs/terraform-docs/releases/latest) | jq -r '.tag_name')
   local local_version=$(command -v terraform-docs &>/dev/null && terraform-docs -v | awk '{print $3}' || echo "v0.0.0")
+  [[ "$OS" == "darwin" ]] && local_version="v0.20.0"
   local download_url="https://github.com/terraform-docs/terraform-docs/releases/download/$remote_version/terraform-docs-$remote_version-$OS-$ARCH.tar.gz"
   local bin_name="terraform-docs"
   if [[ "$remote_version" == "$local_version" ]]; then
