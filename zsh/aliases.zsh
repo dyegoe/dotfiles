@@ -348,3 +348,25 @@ function python_venv() {
 
 # ##### Kubernetes #####
 alias k='kubectl'
+
+# ##### Pre-Commit #####
+alias install-hooks='install_pre_commit_hooks'
+function install_pre_commit_hooks() {
+  find . -type d -name .git \
+    -not -path "*/.terraform/*" \
+    -not -path "*/.terragrunt-cache/*" \
+    -print0 |
+  while IFS= read -r -d '' gitdir; do
+    repo_root=$(dirname "$gitdir")
+    cfg="$repo_root/.pre-commit-config.yaml"
+
+    if [ -f "$cfg" ]; then
+      echo "Installing pre-commit in: $repo_root"
+      if (cd "$repo_root" && pre-commit install -f --config "$cfg" --hook-type pre-commit); then
+        echo "✓ Successfully installed pre-commit in $repo_root"
+      else
+        echo "✗ Failed to install pre-commit in $repo_root"
+      fi
+    fi
+  done
+}
