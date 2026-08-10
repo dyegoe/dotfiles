@@ -90,7 +90,7 @@ function install_packages() {
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_info "  Installing packages using dnf..."
     sudo dnf --setopt=install_weak_deps=False -y install \
-      zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty \
+      zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty age \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
       pre-commit ansible python3-ansible-lint @virtualization

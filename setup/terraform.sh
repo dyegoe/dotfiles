@@ -1,3 +1,16 @@
+# ##### Setup tenv #####
+setup_commands+="setup_tenv "
+function setup_tenv() {
+  if command -v tenv &>/dev/null; then
+    local tenv_completion_file="$ZDOTDIR/functions/_tenv"
+    log_info "Setup tenv..."
+    mkdir -p $ZDOTDIR/functions
+    tenv completion zsh >$tenv_completion_file
+    chmod 755 $tenv_completion_file
+    log_info "  setup done..."
+  fi
+}
+
 # ##### Install Terraform deps #####
 install_commands+="install_terraform "
 function install_terraform() {
