@@ -14,10 +14,10 @@ function install_sops() {
   local download_url="https://github.com/getsops/sops/releases/download/$remote_version/sops-${remote_version}.${OS}.${ARCH}"
   local bin_name="sops"
   if [[ "$remote_version" == "v${local_version}" ]]; then
-    log_info "  sops is up to date..."
+    log_info "  is up to date..."
     return
   fi
-  log_info "  installing sops..."
+  log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
-  log_info "  sops installed..."
+  log_info "  installed..."
 }

@@ -27,12 +27,12 @@ function install_talosctl() {
   local download_url="https://github.com/siderolabs/talos/releases/download/$remote_version/talosctl-${OS}-${ARCH}"
   local bin_name="talosctl"
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  talosctl is up to date..."
+    log_info "  is up to date..."
     return
   fi
-  log_info "  installing talosctl..."
+  log_info "  installing..."
   download_bin_local_bin $download_url $bin_name
-  log_info "  talosctl installed..."
+  log_info "  installed..."
 }
 
 # ##### Setup talhelper #####
@@ -64,10 +64,10 @@ function install_talhelper() {
   local download_url="https://github.com/budimanjojo/talhelper/releases/download/$remote_version/talhelper_${OS}_${ARCH}.tar.gz"
   local bin_name="talhelper"
   if [[ "$remote_version" == "v${local_version}" ]]; then
-    log_info "  talhelper is up to date..."
+    log_info "  is up to date..."
     return
   fi
-  log_info "  installing talhelper..."
+  log_info "  installing..."
   download_tar_gz_local_bin $download_url $bin_name
-  log_info "  talhelper installed..."
+  log_info "  talhelper..."
 }
