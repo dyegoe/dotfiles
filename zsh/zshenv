@@ -3,21 +3,23 @@
 # ##### Set OS / Distro #####
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 OSS=$(uname -s)
-DISTRO=unknow
+DISTRO=unknown
 ARCHM=$(uname -m)
 if [[ "$ARCHM" == "x86_64" ]]; then
   ARCH="amd64"
   ARCHS="64bit"
-fi
-if [[ "$ARCHM" == "arm64" ]]; then
+elif [[ "$ARCHM" == "arm64" || "$ARCHM" == "aarch64" ]]; then
   ARCH="arm64"
   ARCHS="arm64"
+else
+  ARCH="unknown"
+  ARCHS="unknown"
 fi
 
 if [[ "$OS" = "linux" ]]; then
   if [[ -f /etc/os-release ]]; then
     . /etc/os-release
-    DISTRO=$ID
+    DISTRO=${ID:-unknown}
   else
     if [[ -f /etc/gentoo-release ]]; then
       DISTRO="gentoo"
@@ -108,7 +110,7 @@ export PATH="$GOPATH/bin:$PATH"
 if [[ "$OS" == "darwin" ]]; then
   export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 fi
-export FPATH="$ZDOTDIR/functions:$FPATH"
+export FPATH="$ZDOTDIR/functions:${FPATH:-}"
 export PATH="$PATH:$HOME/.rvm/bin"
 
 # ##### Load work only vars #####
