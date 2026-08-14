@@ -1,14 +1,13 @@
 # ##### Setup user #####
-setup_commands+="setup_user "
+setup_commands+=(setup_user)
 function setup_user() {
   log_info "Set ZSH as shell for the current user..."
-  if [[ "$OS" == "darwin" ]]; then
-    log_info "  $OS doesn't need further User setup..."
-    return
-  fi
+  skip_on_darwin "$OS doesn't need further User setup..." && return
+
   log_info "  set ZSH as shell for the current user..."
-  sudo usermod -s $(which zsh) $USER
+  run sudo usermod -s "$(command -v zsh)" "$(id -un)"
+
   log_info "  add the current user to the libvirt group..."
-  sudo usermod -aG libvirt $USER
+  run sudo usermod -aG libvirt "$(id -un)" || true
   log_info "  setup done..."
 }
