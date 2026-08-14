@@ -1,36 +1,38 @@
 #!/usr/bin/env bash
-set -e -o pipefail
+set -euo pipefail
+shopt -s nullglob
 
 # ##### Get script directory #####
-SCRIPT_DIR=$(dirname $(readlink -f $0))
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 # ##### Set variables #####
-CURL_CMD="curl -fsSL"
-UNZIP_CMD="unzip -qq -o -d"
+CURL_CMD=(curl -fsSL)
+UNZIP_CMD=(unzip -qq -o -d)
+: "${DRY_RUN:=0}"
 
-source $SCRIPT_DIR/zsh/zshenv
-mkdir -m 700 -p $LOCAL_BIN
-mkdir -m 700 -p $ZDOTDIR
+source "$SCRIPT_DIR/zsh/zshenv"
+mkdir -p "$LOCAL_BIN" && chmod 700 "$LOCAL_BIN"
+mkdir -p "$ZDOTDIR" && chmod 700 "$ZDOTDIR"
 
-# ##### Default log prefix #####
-function log_info() {
-  printf "\e[33m\e[1m[INFO]\e[0m\e[34m $1\e[0m\n"
-}
-function log_error() {
-  printf "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m\n"
-}
+# ##### Shared library #####
+source "$SCRIPT_DIR/lib/log.sh"
+source "$SCRIPT_DIR/lib/run.sh"
+source "$SCRIPT_DIR/lib/symlink.sh"
+source "$SCRIPT_DIR/lib/completion.sh"
+source "$SCRIPT_DIR/lib/repo.sh"
+source "$SCRIPT_DIR/lib/github.sh"
 
 # ##### Collect all commands #####
-setup_commands=""
-install_commands=""
+declare -a setup_commands=()
+declare -a install_commands=()
 
 # ##### upgrade system
 function upgrade_system() {
   # fedora
   if [[ "$DISTRO" == "fedora" ]]; then
     log_info "Upgrade system..."
-    sudo dnf -y upgrade --refresh
-    sudo dnf -y autoremove
+    run sudo dnf -y upgrade --refresh
+    run sudo dnf -y autoremove
     return
   fi
   # anything else
@@ -51,7 +53,7 @@ function install_nvidia() {
   fi
 
   log_info "  Installing NVIDIA drivers..."
-  sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo
+  run sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo
   log_info "  NVIDIA drivers installed successfully."
 }
 
@@ -61,18 +63,18 @@ function install_packages() {
   # darwin
   if [[ "$OS" == "darwin" ]]; then
     if ! command -v brew &>/dev/null; then
-      log_info "Install Homebrew..."
-      /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      log_info "  Install Homebrew..."
+      run /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       unset NONINTERACTIVE
-      eval $(/opt/homebrew/bin/brew shellenv)
+      eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     # because darwin already has zsh, we don't install it
     log_info "  Installing packages using brew..."
-    brew install \
+    run brew install \
       fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty \
       grep gawk gnu-sed coreutils \
       ansible ansible-lint pre-commit
-    sudo softwareupdate --agree-to-license --install-rosetta
+    run sudo softwareupdate --agree-to-license --install-rosetta || true
     return
   fi
 
@@ -80,16 +82,16 @@ function install_packages() {
   if [[ "$DISTRO" == "fedora" ]]; then
     if [[ ! -f /etc/yum.repos.d/vscode.repo ]]; then
       log_info "  Import Visual Studio Code repository..."
-      sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-      sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+      run sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+      run sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
     fi
     if ! command -v 1password &>/dev/null; then
       log_info "  Installing 1Password rpm for first time..."
-      sudo rpm -ivh https://downloads.1password.com/linux/rpm/stable/x86\_64/1password-latest.rpm
+      run sudo rpm -ivh "https://downloads.1password.com/linux/rpm/stable/x86_64/1password-latest.rpm"
     fi
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_info "  Installing packages using dnf..."
-    sudo dnf --setopt=install_weak_deps=False -y install \
+    run sudo dnf --setopt=install_weak_deps=False -y install \
       zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty age \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
@@ -101,8 +103,9 @@ function install_packages() {
 }
 
 # ##### Import setup scripts #####
-for f in $SCRIPT_DIR/setup/*.sh; do
-  source $f
+# shellcheck source=/dev/null
+for f in "$SCRIPT_DIR"/setup/*.sh; do
+  source "$f"
 done
 
 # ##### full #####
@@ -116,108 +119,59 @@ function full() {
 
 # ##### install #####
 function install() {
-  for f in $install_commands; do
-    $f
+  local f
+  for f in "${install_commands[@]}"; do
+    "$f"
   done
 }
 
 # ##### setup #####
 function setup() {
-  for f in $setup_commands; do
-    $f
+  local f
+  for f in "${setup_commands[@]}"; do
+    "$f"
   done
 }
 
 # ##### help #####
 function help() {
-  printf "Usage: $0 [ full | install_packages | upgrade_system | setup | install | ${setup_commands// / | }${install_commands// / | }]" | sed 's/ | ]$/ ]/'
+  local all=(full install_packages upgrade_system setup install show_env "${setup_commands[@]}" "${install_commands[@]}")
+  local list
+  list=$(printf '%s | ' "${all[@]}")
+  printf 'Usage: %s [--dry-run] [ %s ]\n' "$0" "${list% | }"
 }
 
-# ##### helpers #####
-# _curl_github $url
-function _curl_github() {
-  if [[ -z "$GITHUB_TOKEN" ]]; then
-    echo $(curl -fsSL -H "X-GitHub-Api-Version: 2022-11-28" "$@")
+# ##### dispatch #####
+function main() {
+  local args=()
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+    --dry-run | -n)
+      DRY_RUN=1
+      ;;
+    *)
+      args+=("$arg")
+      ;;
+    esac
+  done
+
+  if [[ ${#args[@]} -eq 0 ]]; then
+    help
     return
   fi
-  echo $(curl -fsSL -H "X-GitHub-Api-Version: 2022-11-28" -H "Authorization: Bearer $GITHUB_TOKEN" "$@")
+
+  # `test` is kept as a documented alias for `show_env`, which does not
+  # shadow the `test` builtin the way the old function name did.
+  [[ "${args[0]}" == "test" ]] && args[0]="show_env"
+
+  if ! declare -F "${args[0]}" &>/dev/null; then
+    log_error "Unknown command: ${args[0]}"
+    help
+    return 1
+  fi
+
+  "${args[@]}"
 }
 
-# download_tar_gz_local_bin $download_url $bin_name [$bin_source]
-function download_tar_gz_local_bin() {
-  if [[ -z "$1" ]]; then
-    log_error "  download_tar_gz_local_bin: missing download_url..."
-    return
-  fi
-  local download_url=$1
-  if [[ -z "$2" ]]; then
-    log_error "  download_tar_gz_local_bin: missing bin_name..."
-    return
-  fi
-  local bin_name=$2
-  local bin_source=$2
-  if [[ ! -z "$3" ]]; then
-    bin_source=$3
-  fi
-  local temp_dir=$(mktemp -d)
-  mkdir -p $temp_dir
-  $CURL_CMD -o $temp_dir/download.tar.gz $download_url
-  tar -C $temp_dir -xzf $temp_dir/download.tar.gz
-  rm -f $LOCAL_BIN/$bin_name
-  mv $temp_dir/$bin_source $LOCAL_BIN
-  chmod 750 $LOCAL_BIN/$bin_name
-  rm -rf $temp_dir
-}
-
-# download_zip_local_bin $download_url $bin_name [$bin_source]
-function download_zip_local_bin() {
-  if [[ -z "$1" ]]; then
-    log_error "  download_zip_local_bin: missing download_url..."
-    return
-  fi
-  local download_url=$1
-  if [[ -z "$2" ]]; then
-    log_error "  download_zip_local_bin: missing bin_name..."
-    return
-  fi
-  local bin_name=$2
-  local bin_source=$2
-  if [[ ! -z "$3" ]]; then
-    bin_source=$3
-  fi
-  local temp_dir=$(mktemp -d)
-  mkdir -p $temp_dir
-  $CURL_CMD -o $temp_dir/download.zip $download_url
-  $UNZIP_CMD $temp_dir $temp_dir/download.zip
-  rm -f $LOCAL_BIN/$bin_name
-  mv $temp_dir/$bin_source $LOCAL_BIN
-  chmod 750 $LOCAL_BIN/$bin_name
-  rm -rf $temp_dir
-}
-
-# download_bin_local_bin $download_url $bin_name [$bin_source]
-function download_bin_local_bin() {
-  if [[ -z "$1" ]]; then
-    log_error "  download_bin_local_bin: missing download_url..."
-    return
-  fi
-  local download_url=$1
-  if [[ -z "$2" ]]; then
-    log_error "  download_bin_local_bin: missing bin_name..."
-    return
-  fi
-  local bin_name=$2
-  local bin_source=$2
-  if [[ ! -z "$3" ]]; then
-    bin_source=$3
-  fi
-  local temp_dir=$(mktemp -d)
-  mkdir -p $temp_dir
-  $CURL_CMD -o $temp_dir/$bin_name $download_url
-  rm -f $LOCAL_BIN/$bin_name
-  mv $temp_dir/$bin_source $LOCAL_BIN
-  chmod 750 $LOCAL_BIN/$bin_name
-  rm -rf $temp_dir
-}
-
-eval $@
+main "$@"
