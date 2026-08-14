@@ -56,7 +56,7 @@ function install_netshoot() {
 function install_helm() {
   log_info "Install helm..."
   local remote_version=$(gh_latest_tag helm/helm)
-  local local_version=$(command -v helm &>/dev/null && helm version --template {{.Version}} || echo "v0.0.0")
+  local local_version=$(command -v helm &>/dev/null && helm version --template '{{.Version}}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
     log_info "  is up to date..."

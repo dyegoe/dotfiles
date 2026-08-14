@@ -1,0 +1,7 @@
+# SC2155 (declare and assign separately) is intentionally not followed for
+# `local x=$(cmd)` in setup/*.sh. Splitting into `local x; x=$(cmd)` would
+# make a failing `cmd` abort the whole `install`/`setup` run under
+# `set -euo pipefail`, instead of falling through to the version-mismatch
+# branch as designed (see lib/github.sh's install_release callers). See
+# CLAUDE.md's "Conventions to preserve" section.
+disable=SC2155

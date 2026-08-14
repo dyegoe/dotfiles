@@ -11,8 +11,8 @@ UNZIP_CMD=(unzip -qq -o -d)
 : "${DRY_RUN:=0}"
 
 source "$SCRIPT_DIR/zsh/zshenv"
-mkdir -m 700 -p "$LOCAL_BIN"
-mkdir -m 700 -p "$ZDOTDIR"
+mkdir -p "$LOCAL_BIN" && chmod 700 "$LOCAL_BIN"
+mkdir -p "$ZDOTDIR" && chmod 700 "$ZDOTDIR"
 
 # ##### Shared library #####
 source "$SCRIPT_DIR/lib/log.sh"
@@ -103,6 +103,7 @@ function install_packages() {
 }
 
 # ##### Import setup scripts #####
+# shellcheck source=/dev/null
 for f in "$SCRIPT_DIR"/setup/*.sh; do
   source "$f"
 done

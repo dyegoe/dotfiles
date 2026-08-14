@@ -106,8 +106,8 @@ function install_release_tree() {
     if ((DRY_RUN)); then
       log_dry "move every executable under $tmp into $LOCAL_BIN"
     else
-      local perm_test=(-perm /u=x,g=x,o=x)
-      [[ "$OS" == "darwin" ]] && perm_test=(-perm +0111)
+      local perm_test=(-perm "/u=x,g=x,o=x")
+      [[ "$OS" == "darwin" ]] && perm_test=(-perm "+0111")
       local f name
       while IFS= read -r -d '' f; do
         name=$(basename "$f")
