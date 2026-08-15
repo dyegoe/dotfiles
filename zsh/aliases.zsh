@@ -277,6 +277,78 @@ function export_cred_aws() {
   return 0
 }
 
+# ##### AWS MFA session token #####
+alias awsmfa='aws_mfa_login'
+function aws_mfa_login() {
+  if [[ "$1" == "help" || -z "$1" || -z "$2" ]]; then
+    printf "Usage: awsmfa <profile> <mfa name> [duration seconds]\n"
+    printf "\n"
+    printf "Requests a temporary session token using MFA and writes it into the AWS credentials file.\n"
+    printf "\n"
+    printf "<profile>    Base profile name, e.g. 'abrh'. Static keys must already be configured under '<profile>-mfa'.\n"
+    printf "<mfa name>   MFA device name, e.g. 'dyego.eugenio'. Used to build arn:aws:iam::<account id>:mfa/<mfa name>.\n"
+    printf "[duration]   Session duration in seconds. Defaults to 129600 (36h).\n"
+    printf "\n"
+    printf "Example: awsmfa abrh dyego.eugenio\n"
+    printf "This reads static keys from profile 'abrh-mfa', requests a session token, and writes the\n"
+    printf "temporary access key, secret key and session token into profile 'abrh'.\n"
+    return 0
+  fi
+  if ! command -v aws &>/dev/null; then
+    log_error "AWS CLI is not installed"
+    return 1
+  fi
+  if ! _check_jq; then
+    return 1
+  fi
+
+  local profile=$1
+  local mfa_name=$2
+  local duration=${3:-129600}
+  local mfa_profile="${profile}-mfa"
+
+  local account_id=$(command aws --profile "$mfa_profile" sts get-caller-identity --query Account --output text 2>/dev/null)
+  if [[ -z "$account_id" ]]; then
+    log_error "Could not get account id using profile $mfa_profile. Check that it exists and has valid static keys."
+    return 1
+  fi
+
+  local serial_number="arn:aws:iam::${account_id}:mfa/${mfa_name}"
+
+  local token_code
+  read -rs "token_code?Enter MFA code for $serial_number: "
+  printf "\n"
+  if [[ -z "$token_code" ]]; then
+    log_error "No MFA code provided"
+    return 1
+  fi
+
+  local session_json=$(command aws --profile "$mfa_profile" sts get-session-token \
+    --serial-number "$serial_number" \
+    --token-code "$token_code" \
+    --duration-seconds "$duration" \
+    --output json)
+  if [[ -z "$session_json" ]]; then
+    log_error "Failed to get session token. Check the MFA code and try again."
+    return 1
+  fi
+
+  local access_key_id=$(printf '%s' "$session_json" | jq -r '.Credentials.AccessKeyId')
+  local secret_access_key=$(printf '%s' "$session_json" | jq -r '.Credentials.SecretAccessKey')
+  local session_token=$(printf '%s' "$session_json" | jq -r '.Credentials.SessionToken')
+  local expiration=$(printf '%s' "$session_json" | jq -r '.Credentials.Expiration')
+  if [[ -z "$access_key_id" || -z "$secret_access_key" || -z "$session_token" ]]; then
+    log_error "Failed to parse session token response"
+    return 1
+  fi
+
+  command aws configure set aws_access_key_id "$access_key_id" --profile "$profile" &&
+    command aws configure set aws_secret_access_key "$secret_access_key" --profile "$profile" &&
+    command aws configure set aws_session_token "$session_token" --profile "$profile" &&
+    log_info "Temporary credentials for profile $profile written, expiring at $expiration" ||
+    log_error "Failed to write temporary credentials for profile $profile"
+}
+
 # ##### Export github personal access token #####
 alias ecgh='export_cred_github'
 function export_cred_github() {
