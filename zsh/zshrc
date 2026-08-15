@@ -103,6 +103,10 @@ if [[ -d $ZDOTDIR/plugins/zsh-autosuggestions ]]; then
   source $ZDOTDIR/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 fi
 if [[ -d $ZDOTDIR/plugins/zsh-syntax-highlighting ]]; then
+  # bold so valid-command green pulls from the pale Catppuccin colors.bright.green
+  # instead of colors.normal.green, which is tuned darker for ANSI-background contrast
+  typeset -A ZSH_HIGHLIGHT_STYLES
+  ZSH_HIGHLIGHT_STYLES[arg0]='fg=green,bold'
   source $ZDOTDIR/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
