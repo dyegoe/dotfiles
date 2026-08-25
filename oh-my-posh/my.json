@@ -97,6 +97,7 @@
       "newline": true
     }
   ],
-  "version": 3,
+  "version": 4,
+  "async": true,
   "final_space": true
 }
