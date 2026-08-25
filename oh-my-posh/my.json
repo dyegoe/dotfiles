@@ -44,11 +44,11 @@
         },
         {
           "options": {
-            "branch_ahead_icon": "\udb82\udf7e ",
-            "branch_behind_icon": "\udb82\udf7d ",
+            "branch_ahead_icon": "\uf062 ",
+            "branch_behind_icon": "\uf063 ",
             "branch_gone_icon": "\udb80\udd64 ",
             "branch_icon": "\ue0a0",
-            "branch_identical_icon": "\udb84\udecc ",
+            "branch_identical_icon": "\uf00c ",
             "commit_icon": "\uf417 ",
             "tag_icon": "\uf412 ",
             "rebase_icon": "\ue728 ",

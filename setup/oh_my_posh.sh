@@ -2,10 +2,8 @@
 setup_commands+=(setup_oh_my_posh)
 function setup_oh_my_posh() {
   log_info "Setup oh-my-posh..."
-  local template
-  for template in default.json my.json; do
-    link_config "$SCRIPT_DIR/oh-my-posh/$template" "$XDG_CONFIG_HOME/oh-my-posh/$template" "$template"
-  done
+  local template=my.json
+  link_config "$SCRIPT_DIR/oh-my-posh/$template" "$XDG_CONFIG_HOME/oh-my-posh/$template" "$template"
   log_info "  setup done..."
 }
 
