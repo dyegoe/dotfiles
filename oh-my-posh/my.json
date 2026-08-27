@@ -14,12 +14,12 @@
     "pythonBright": "81"
   },
   "secondary_prompt": {
-    "template": "\uf101 ",
+    "template": "\u00bb ",
     "foreground": "p:promptSecondary",
     "background": "transparent"
   },
   "transient_prompt": {
-    "template": "\uf105 ",
+    "template": "\u276f ",
     "background": "transparent",
     "foreground_templates": [
       "{{ if gt .Code 0}}p:promptError{{ end }}",
@@ -85,7 +85,7 @@
       "segments": [
         {
           "style": "plain",
-          "template": "\uf105",
+          "template": "\u276f",
           "background": "transparent",
           "type": "text",
           "foreground_templates": [
