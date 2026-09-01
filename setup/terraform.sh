@@ -28,7 +28,7 @@ function install_terraform_docs() {
   log_info "Install terraform-docs..."
   local remote_version=$(gh_latest_tag terraform-docs/terraform-docs)
   local local_version=$(command -v terraform-docs &>/dev/null && terraform-docs -v | awk '{print $3}' || echo "v0.0.0")
-  [[ "$OS" == "darwin" ]] && local_version="v0.20.0"
+  [[ "$OS" == "darwin" ]] && remote_version="v0.21.0"
 
   if version_is_current "$remote_version" "$local_version"; then
     log_info "  is up to date..."
