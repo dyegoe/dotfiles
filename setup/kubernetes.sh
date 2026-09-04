@@ -26,6 +26,7 @@ function install_kubernetes() {
   install_helm
   install_kubectx
   install_k9s
+  install_sofka
   install_kubeseal
 }
 
@@ -87,6 +88,34 @@ function install_k9s() {
     return
   fi
   install_release "https://github.com/derailed/k9s/releases/download/$remote_version/k9s_${OSS}_${ARCH}.tar.gz" k9s tar.gz
+}
+
+function install_sofka() {
+  log_info "Install sofka..."
+
+  local remote_version=$(gh_latest_tag nklmilojevic/sofka)
+  local local_version=$(command -v sofka &>/dev/null && sofka --version | awk '/^sofka /{print $2}' || echo "v0.0.0")
+
+  if version_is_current "$remote_version" "$local_version"; then
+    log_info "  is up to date..."
+    return
+  fi
+
+  local target_arch
+  if [[ "$ARCHM" == "arm64" || "$ARCHM" == "aarch64" ]]; then
+    target_arch="aarch64"
+  else
+    target_arch="x86_64"
+  fi
+
+  local target_sys
+  if [[ "$OS" == "darwin" ]]; then
+    target_sys="apple-darwin"
+  else
+    target_sys="unknown-linux-gnu"
+  fi
+
+  install_release "https://github.com/nklmilojevic/sofka/releases/download/$remote_version/sofka-${remote_version}-${target_arch}-${target_sys}.tar.gz" sofka tar.gz
 }
 
 function install_kubeseal() {
