@@ -41,3 +41,18 @@ function install_talhelper() {
   fi
   install_release "https://github.com/budimanjojo/talhelper/releases/download/$remote_version/talhelper_${OS}_${ARCH}.tar.gz" talhelper tar.gz
 }
+
+# ##### Install topf #####
+install_commands+=(install_topf)
+function install_topf() {
+  log_info "Install topf..."
+
+  local remote_version=$(gh_latest_tag postfinance/topf)
+  local local_version=$(command -v topf &>/dev/null && topf --version | awk '{print $3}' || echo "v0.0.0")
+
+  if version_is_current "$remote_version" "$local_version"; then
+    log_info "  is up to date..."
+    return
+  fi
+  install_release "https://github.com/postfinance/topf/releases/download/$remote_version/topf_${OS}_${ARCH}.tar.gz" topf tar.gz
+}
