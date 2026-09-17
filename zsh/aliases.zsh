@@ -10,6 +10,7 @@ function log_error() {
 
 # ##### Eza #####
 alias ll='eza --icons=always --git -lah'
+alias lld='eza --icons=always --git -s date -lah'
 alias ls='eza --icons --git'
 
 # ##### Bat #####
