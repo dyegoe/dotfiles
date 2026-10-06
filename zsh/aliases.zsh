@@ -288,7 +288,7 @@ function aws_mfa_login() {
     printf "\n"
     printf "<profile>    Base profile name, e.g. 'abrh'. Static keys must already be configured under '<profile>-mfa'.\n"
     printf "<mfa name>   MFA device name, e.g. 'dyego.eugenio'. Used to build arn:aws:iam::<account id>:mfa/<mfa name>.\n"
-    printf "[duration]   Session duration in seconds. Defaults to 129600 (36h).\n"
+    printf "[duration]   Session duration in seconds. Defaults to 43200 (12h).\n"
     printf "\n"
     printf "Example: awsmfa abrh dyego.eugenio\n"
     printf "This reads static keys from profile 'abrh-mfa', requests a session token, and writes the\n"
@@ -305,7 +305,7 @@ function aws_mfa_login() {
 
   local profile=$1
   local mfa_name=$2
-  local duration=${3:-129600}
+  local duration=${3:-43200}
   local mfa_profile="${profile}-mfa"
 
   local account_id=$(command aws --profile "$mfa_profile" sts get-caller-identity --query Account --output text 2>/dev/null)
