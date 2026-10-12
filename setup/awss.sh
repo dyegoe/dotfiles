@@ -1,3 +1,9 @@
+# ##### Setup awss #####
+setup_commands+=(setup_awss)
+function setup_awss() {
+  gen_zsh_completion awss
+}
+
 # ##### Install awss #####
 install_commands+=(install_awss)
 function install_awss() {
