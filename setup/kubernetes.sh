@@ -28,6 +28,7 @@ function install_kubernetes() {
   install_k9s
   install_sofka
   install_kubeseal
+  install_kubelogin
 }
 
 function install_kubectl() {
@@ -128,4 +129,17 @@ function install_kubeseal() {
     return
   fi
   install_release "https://github.com/bitnami-labs/sealed-secrets/releases/download/$remote_version/kubeseal-${remote_version#v}-$OS-$ARCH.tar.gz" kubeseal tar.gz
+}
+
+function install_kubelogin() {
+  log_info "Install kubelogin..."
+  local remote_version=$(gh_latest_tag int128/kubelogin)
+  local local_version=$(command -v kubectl-oidc_login &>/dev/null && kubectl-oidc_login --version | awk '{print $3}' || echo "v0.0.0")
+
+  if version_is_current "$remote_version" "$local_version"; then
+    log_info "  is up to date..."
+    return
+  fi
+  # Installed under the kubectl plugin name so `kubectl oidc-login` works.
+  install_release "https://github.com/int128/kubelogin/releases/download/$remote_version/kubelogin_${OS}_${ARCH}.zip" kubectl-oidc_login zip kubelogin
 }
