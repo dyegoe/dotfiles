@@ -18,6 +18,11 @@ function link_config() {
     return 0
   fi
 
+  if [[ -d "$target" ]] && [[ ! -L "$target" ]]; then
+    log_error "  $display_name is a directory; refusing to replace it..."
+    return 1
+  fi
+
   if [[ -f "$target" ]] && [[ ! -L "$target" ]]; then
     log_info "  $display_name already exists. It is a file, moving it to backup..."
     run cp -p "$target" "${target}.$(date +%Y%m%d%H%M%S).backup"
@@ -26,5 +31,9 @@ function link_config() {
   log_info "  creating the symlink for $display_name..."
   local tmp_link="${target}.tmp.$$"
   run ln -sf "$origin" "$tmp_link"
-  run mv -T "$tmp_link" "$target"
+  if [[ "$OS" == "darwin" ]]; then
+    run mv -fh "$tmp_link" "$target"
+  else
+    run mv -T "$tmp_link" "$target"
+  fi
 }

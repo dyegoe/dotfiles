@@ -91,6 +91,22 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
 
 ## MacOS
 
+### Alacritty
+
+Alacritty is installed from the official GitHub release DMG rather than Homebrew:
+
+```bash
+./setup.sh install_alacritty
+```
+
+The installer updates `/Applications/Alacritty.app` and links its CLI into
+`$LOCAL_BIN`. It also runs as part of `install` and `full`.
+If migrating from Homebrew, run `brew uninstall --cask alacritty` before running
+the installer. Homebrew disabled its cask because of macOS Gatekeeper checks;
+installing the DMG directly does not make the app notarized. If macOS blocks it,
+review the release source before approving it in System Settings > Privacy & Security.
+The installer does not disable Gatekeeper or remove quarantine attributes.
+
 ### Manual configuration
 
 Git repositories that are work related should be cloned under `~/git/work` directory.

@@ -71,7 +71,7 @@ function install_packages() {
     # because darwin already has zsh, we don't install it
     log_info "  Installing packages using brew..."
     run brew install \
-      fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty \
+      fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen \
       grep gawk gnu-sed coreutils \
       ansible ansible-lint pre-commit
     run sudo softwareupdate --agree-to-license --install-rosetta || true
