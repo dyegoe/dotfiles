@@ -113,8 +113,8 @@ function full() {
   install_nvidia
   install_packages
   upgrade_system
-  setup
   install
+  setup
 }
 
 # ##### install #####
