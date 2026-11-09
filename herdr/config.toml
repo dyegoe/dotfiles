@@ -1,0 +1,19 @@
+# herdr configuration — symlinked to ~/.config/herdr/config.toml by setup_herdr.
+# Keybindings are intentionally left at herdr's defaults (prefix = ctrl+b).
+# Full reference: `herdr --default-config` or https://herdr.dev/docs/config-reference/
+# Reload a running server after editing: `herdr server reload-config`
+
+# Skip the first-run flow; agent integrations are managed with
+# `herdr integration install|status` instead of the onboarding UI.
+onboarding = false
+
+[theme]
+name = "catppuccin"
+
+[ui]
+# Replaces the tmux catppuccin status-right (session + uptime).
+tab_bar_right = [
+  { type = "zoom" },
+  { type = "hostname" },
+  { type = "datetime", format = "%H:%M" },
+]
