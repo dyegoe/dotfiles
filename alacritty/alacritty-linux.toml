@@ -33,7 +33,9 @@
 
 [terminal.shell]
   program = "/usr/bin/env"
-  args    = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
+  # Try herdr (attaches to its default session), then tmux (attach-or-create
+  # "main"), then a plain zsh — so machines without herdr keep working.
+  args    = ["zsh", "--login", "-c", "if command -v herdr >/dev/null; then exec herdr; elif command -v tmux >/dev/null; then exec tmux new-session -A -s main; else exec zsh --login; fi"]
 
 [scrolling]
   history = 10000

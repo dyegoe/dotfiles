@@ -50,7 +50,7 @@ install_commands+=(install_foo)
 
 **Shell environment (`zsh/zshenv`)** is the single source of truth for OS/distro detection (`OS`, `OSS`, `DISTRO`, `ARCHM`, `ARCH`, `ARCHS`), XDG base dirs, and all tool-specific env vars (FZF, bat, Go, Terraform/tenv, etc.). It's sourced both by `setup.sh` (for install-time detection) and by the user's actual zsh session — it must stay safe to source from **both** a `set -u` bash script and a real interactive zsh, so guard anything that might be unbound in the bash case (`${FPATH:-}`) rather than assuming zsh's defaults. `zsh/zshrc` handles interactive-shell concerns (completions, keybindings, plugin loading, prompt). Both end by sourcing an optional untracked `work.env` / `work.zsh` for machine-local/work-only overrides — don't add work-specific config to the tracked files.
 
-**Config files live in top-level dirs named after the tool** (`tmux/`, `vim/`, `alacritty/`, `git/`, `ssh/`, `oh-my-posh/`) and are symlinked into `$XDG_CONFIG_HOME` (or `$HOME` for dotfiles like `.gitconfig`) by the matching `setup_*` function — they are never edited in place at their symlink destination.
+**Config files live in top-level dirs named after the tool** (`tmux/`, `herdr/`, `vim/`, `alacritty/`, `git/`, `ssh/`, `oh-my-posh/`) and are symlinked into `$XDG_CONFIG_HOME` (or `$HOME` for dotfiles like `.gitconfig`) by the matching `setup_*` function — they are never edited in place at their symlink destination.
 
 ## Conventions to preserve
 
