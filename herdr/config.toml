@@ -17,3 +17,7 @@ tab_bar_right = [
   { type = "hostname" },
   { type = "datetime", format = "%H:%M" },
 ]
+status_indicators = "symbols"
+
+[ui.toast]
+delivery = "herdr"
