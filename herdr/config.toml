@@ -7,6 +7,21 @@
 # `herdr integration install|status` instead of the onboarding UI.
 onboarding = false
 
+[terminal]
+# Like tmux's `split-window -c "#{pane_current_path}"`: new panes and tabs start
+# in the focused pane's directory. herdr has a single policy for panes, tabs and
+# workspaces, so new workspaces are sent to $HOME by the key override below.
+new_cwd = "follow"
+
+[keys]
+# Free the default chord so the custom command below owns it.
+new_workspace = ""
+
+[[keys.command]]
+key = "prefix+shift+n"
+type = "shell"
+command = 'herdr workspace create --cwd "$HOME" --focus'
+
 [theme]
 name = "catppuccin"
 
@@ -18,6 +33,12 @@ tab_bar_right = [
   { type = "datetime", format = "%H:%M" },
 ]
 status_indicators = "symbols"
+pane_borders = "always"
+pane_outer_borders = true
 
 [ui.toast]
 delivery = "herdr"
+
+[ui.sidebar.agents]
+rows = [["state_icon", "machine", "workspace", "tab", "pane"], ["agent"]]
+
