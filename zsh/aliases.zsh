@@ -29,7 +29,7 @@ function git_current_branch() {
     [[ $ret == 128 ]] && return # no git repo.
     ref=$(command git rev-parse --short HEAD 2>/dev/null) || return
   fi
-  printf ${ref#refs/heads/\n}
+  printf '%s\n' "${ref#refs/heads/}"
 }
 alias gcr='git_check_repos'
 function git_check_repos() {
@@ -42,6 +42,108 @@ function git_check_repos() {
     git status
     cd $current_dir
   done
+}
+# Prints the default branch of <remote> (origin by default): whatever
+# refs/remotes/<remote>/HEAD points at, falling back to the first of
+# main/master/trunk/develop that exists locally or on the remote.
+function git_main_branch() {
+  command git rev-parse --git-dir &>/dev/null || return 1
+  local remote=${1:-origin}
+  local ref=$(command git symbolic-ref --quiet --short "refs/remotes/$remote/HEAD" 2>/dev/null)
+  if [[ -n "$ref" ]]; then
+    printf '%s\n' "${ref#$remote/}"
+    return 0
+  fi
+  local branch
+  for branch in main master trunk develop; do
+    if command git show-ref --quiet --verify "refs/heads/$branch" ||
+      command git show-ref --quiet --verify "refs/remotes/$remote/$branch"; then
+      printf '%s\n' "$branch"
+      return 0
+    fi
+  done
+  return 1
+}
+alias gcm='git checkout $(git_main_branch)'
+alias gsync='git_sync_main'
+function git_sync_main() {
+  local dry_run=0 all=0 remote=origin
+  while (( $# )); do
+    case "$1" in
+      -n|--dry-run) dry_run=1 ;;
+      -a|--all) all=1 ;;
+      -h|--help|help)
+        printf "Usage: gsync [-n|--dry-run] [-a|--all] [remote]\n"
+        printf "\n"
+        printf "Fetches all remotes with --prune, checks out the default branch (main/master/...),\n"
+        printf "fast-forwards it to its upstream and deletes stale local branches:\n"
+        printf "  - branches whose upstream was deleted on the remote ([gone], e.g. merged PRs, squash included)\n"
+        printf "  - branches that were pushed and are fully merged into the default branch\n"
+        printf "Local-only branches that were never pushed are kept, as are branches checked out in a worktree.\n"
+        printf "\n"
+        printf "  -n, --dry-run  only list the branches that would be deleted\n"
+        printf "  -a, --all      delete every local branch except the default one (old behaviour, loses unpushed work)\n"
+        printf "  remote         remote that holds the default branch, defaults to origin\n"
+        return 0
+        ;;
+      *) remote=$1 ;;
+    esac
+    shift
+  done
+
+  if ! command git rev-parse --git-dir &>/dev/null; then
+    log_error "Not a git repository"
+    return 1
+  fi
+
+  log_info "Fetching all remotes and pruning deleted branches"
+  command git fetch --all --prune --jobs=10 || return 1
+
+  # Repos created with `git init` + `git remote add` have no <remote>/HEAD; ask the remote once.
+  if ! command git symbolic-ref --quiet "refs/remotes/$remote/HEAD" &>/dev/null; then
+    command git remote set-head "$remote" --auto &>/dev/null
+  fi
+  local default=$(git_main_branch "$remote")
+  if [[ -z "$default" ]]; then
+    log_error "Could not detect the default branch of $remote"
+    return 1
+  fi
+
+  if [[ "$(git_current_branch)" != "$default" ]]; then
+    command git checkout "$default" || return 1
+  fi
+  log_info "Fast-forwarding $default"
+  command git merge --ff-only --quiet '@{upstream}' || return 1
+
+  local -a merged=(${(f)"$(command git for-each-ref --merged="$default" --format='%(refname:short)' refs/heads)"})
+  local branch upstream track worktree reason
+  local -i count=0
+  # ':' can't appear in a ref name, so it's a safe separator (worktree path is last, so it may contain one).
+  while IFS=: read -r branch upstream track worktree; do
+    [[ "$branch" == "$default" ]] && continue
+    if [[ -n "$worktree" ]]; then
+      log_info "Keeping $branch (checked out in $worktree)"
+      continue
+    fi
+    if (( all )); then
+      reason="--all"
+    elif [[ "$track" == "[gone]" ]]; then
+      reason="upstream gone"
+    elif [[ -n "$upstream" ]] && (( ${merged[(Ie)$branch]} )); then
+      reason="merged into $default"
+    else
+      continue
+    fi
+    count+=1
+    if (( dry_run )); then
+      log_info "Would delete $branch ($reason)"
+    else
+      log_info "Deleting $branch ($reason)"
+      command git branch --delete --force --quiet "$branch"
+    fi
+  done < <(command git for-each-ref --format='%(refname:short):%(upstream):%(upstream:track):%(worktreepath)' refs/heads)
+  (( count == 0 )) && log_info "No stale branches"
+  return 0
 }
 alias g='git'
 alias ga='git add'
