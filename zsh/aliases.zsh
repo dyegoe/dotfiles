@@ -524,6 +524,106 @@ function python_venv() {
 # ##### Kubernetes #####
 alias k='kubectl'
 
+# ##### herdr #####
+# Workspaces created by herdr_new_session, in sidebar order: "<label> <directory>".
+# Machine-local entries (e.g. work repos) belong in $ZDOTDIR/work.zsh, which is
+# sourced after this file and can extend the array: herdr_workspaces+=("label dir").
+herdr_workspaces=(
+  "home $HOME"
+  "awss $HOME/git/github.com/dyegoe/awss"
+  "homelab $HOME/git/github.com/dyegoe/homelab"
+  "dotfiles $HOME/dotfiles"
+)
+alias hns='herdr_new_session'
+function herdr_new_session() {
+  local session=work direction=down ratio=0.7 attach=1
+  while (( $# )); do
+    case "$1" in
+      -d|--direction) direction=${2:-}; shift ;;
+      -r|--ratio) ratio=${2:-}; shift ;;
+      --no-attach) attach=0 ;;
+      -h|--help|help)
+        printf "Usage: hns [-d|--direction down|right] [-r|--ratio 0.7] [--no-attach] [session]\n"
+        printf "\n"
+        printf "Creates (or completes) a named herdr session with one workspace per entry in\n"
+        printf "\$herdr_workspaces, each split into 2 panes in the workspace's directory.\n"
+        printf "Workspaces whose label already exists in the session are left untouched, so it is safe to rerun.\n"
+        printf "\n"
+        printf "  -d, --direction  split direction, defaults to down (top/bottom, like the current home workspace)\n"
+        printf "  -r, --ratio      share of the first pane, defaults to 0.7\n"
+        printf "  --no-attach      only build the session, don't attach to it\n"
+        printf "  session          session name, defaults to 'work' (the default session is never touched)\n"
+        return 0
+        ;;
+      *) session=$1 ;;
+    esac
+    shift
+  done
+  if [[ "$direction" != (down|right) ]]; then
+    log_error "Invalid direction '$direction', use down or right"
+    return 1
+  fi
+  if ! command -v herdr &>/dev/null; then
+    log_error "herdr is not installed"
+    return 1
+  fi
+  if ! _check_jq; then
+    return 1
+  fi
+  # `--session` takes precedence over the HERDR_SOCKET_PATH inherited inside a herdr pane.
+  local -a hd=(herdr --session "$session")
+
+  if ! $hd workspace list &>/dev/null; then
+    log_info "Starting herdr session $session"
+    # setsid: the server must outlive this shell/pane.
+    setsid -f herdr --session "$session" server </dev/null &>/dev/null
+    local -i tries=0
+    until $hd workspace list &>/dev/null; do
+      if (( ++tries > 50 )); then
+        log_error "herdr session $session did not start, see ~/.config/herdr/herdr-server.log"
+        return 1
+      fi
+      sleep 0.1
+    done
+  fi
+
+  local -a existing=(${(f)"$($hd workspace list | jq -r '.result.workspaces[].label')"})
+  local entry label dir created pane
+  for entry in "${herdr_workspaces[@]}"; do
+    label=${entry%% *}
+    dir=${entry#* }
+    if (( ${existing[(Ie)$label]} )); then
+      log_info "Workspace $label already exists, skipping"
+      continue
+    fi
+    if [[ ! -d "$dir" ]]; then
+      log_error "Directory $dir not found, skipping workspace $label"
+      continue
+    fi
+    created=$($hd workspace create --cwd "$dir" --label "$label" --no-focus) || {
+      log_error "Failed to create workspace $label"
+      continue
+    }
+    pane=$(printf '%s' "$created" | jq -r '.result.root_pane.pane_id')
+    $hd pane split "$pane" --direction "$direction" --ratio "$ratio" --cwd "$dir" --no-focus >/dev/null &&
+      log_info "Workspace $label created in $dir" ||
+      log_error "Workspace $label created but splitting pane $pane failed"
+  done
+
+  # Start on the first workspace instead of wherever the last create left focus.
+  local first=$($hd workspace list | jq -r '.result.workspaces | min_by(.number) | .workspace_id // empty')
+  [[ -n "$first" ]] && $hd workspace focus "$first" >/dev/null
+
+  if (( ! attach )); then
+    log_info "Session $session ready, attach with: herdr --session $session"
+  elif [[ -n "${HERDR_ENV:-}" ]]; then
+    # Attaching from inside a herdr pane would nest the TUI.
+    log_info "Session $session ready; you're inside herdr, attach from a plain terminal with: herdr --session $session"
+  else
+    herdr --session "$session"
+  fi
+}
+
 # ##### Pre-Commit #####
 alias install-hooks='install_pre_commit_hooks'
 function install_pre_commit_hooks() {
