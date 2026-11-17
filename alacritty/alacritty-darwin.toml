@@ -34,7 +34,7 @@
 
 [terminal.shell]
   program = "/usr/bin/env"
-  args    = ["zsh", "--login", "-c", "tmux new-session -A -s main"]
+  args    = ["zsh", "--login"]
 
 [scrolling]
   history = 10000
