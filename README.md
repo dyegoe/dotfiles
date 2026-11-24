@@ -9,66 +9,59 @@
   - Click `+ Add Input Source`
   - Click `English (United States)`
   - Select `English (US, intl., with dead keys)`
-  - Select the previous keyboard, `English (US)`
-  - Click `...` and `Remove`
   - Close `X`
 - Click `Next`
-- Click on `Change Destination`
-  - Select the disks (or disk if you have one). In my specific case, I have two disks:
-    - Gigabyte (SSD) nvme0n1
-    - Kingston (SSD) nvme1n1
-  - Select `Mount point assignment`
-  - Click `Next`
-  - For `/` Mount point, select the disk where Fedora will be installed: e.g. `nvme0n1p1`
+- Select `Mount point assignment`
+- Click `Next`
+  - For the `/` Mount point, select the disk where Fedora will be installed: e.g. `nvme0n1p6`
     - Ensure that the `Reformat` switch is on.
-  - For `/boot/efi` Mount point, select the disk with an existing EFI partition: e.g. `nvme1n1p1`
-  - For `/boot` Mount point, click on the trash icon to remove it.
+  - For the `/boot/efi` Mount point, select the disk with an existing EFI partition: e.g. `nvme1n1p1`
+  - For the `/boot` Mount point, click on the trash icon to remove it.
   - Click `Next`
-  - Check the `I understand that some existing data will be erased`
+  - Check `I understand that some existing data will be erased`
   - Click `Apply mount point assignment and install`
-- Click `Exit to live desktop`
-- And restart the system
+- Click `Reboot`
+
+PS: If it does not boot into Fedora, go to Windows, open a Terminal in Administrator mode, and run `bcdedit /set "{bootmgr}" path \EFI\fedora\shimx64.efi`, reboot.
 
 ### Post Installation
 
 - Start Setup
-- `English (United Kingdom)` should be already selected
+- Setup Wi-Fi
 - Click `Next`
-- `English (US, intl., with dead keys)` should be already selected
+- `Location Services` should already be on
 - Click `Next`
-- `Location Services` should be already on
-- `Automatic Problem Reporting` should be already on
-- Click `Next`
-- Select your location on the map (ONLY select in the map! There is a bug where searching crashes the installer)
+- Select your location on the map (ONLY select on the map! There is a bug where searching crashes the installer)
 - Click `Next`
 - Click `Enable Third-Party Repositories`
 - Click `Next`
-- Fill in your `Full Name`, `Username`
+- Fill in your `Full Name` and `Username`
 - Click `Next`
-- Fill in your `Password`, and `Confirm Password`
+- Fill in your `Password` and `Confirm Password`
 - Click `Next`
 - Click `Start Using Fedora Linux`
 - Skip the `Welcome Tour`
 - Open a terminal
-- You might have some updates available. Although the script will upgrade, it is good idea to do it manually and avoid issues when installing the new packages.
+- You might have some updates available. Although the script will upgrade, it is a good idea to do it manually and avoid issues when installing the new packages.
 - `sudo dnf upgrade --refresh -y`
 - If any package is updated, it is a good idea to **reboot** the system.
 - `sudo dnf install -y git` (most likely already installed)
-- **Important**, before continuing, ensure that if your new system has no windows or nvidia video card, you create the followig files to skip the installation.
+- **Important**: before continuing, ensure that if your new system has no Windows or NVIDIA video card, you create the following files to skip the installation.
   - `touch $HOME/.nonvidia`
   - `touch $HOME/.nowindows`
 - `git clone https://github.com/dyegoe/dotfiles.git $HOME/dotfiles`
-- `$HOME/dotfiles/setup.sh install_nvidia`
-- Wait for the installation to finish. Akmmod will build the driver for the current kernel.
-  - `while true; do sudo ps aux |grep akmods |grep -v grep; sleep 1; echo '#####'; done` until the process is finished.
-- Restart the system
-- Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
+- If your system has Nvidia
+  - `$HOME/dotfiles/setup.sh install_nvidia`
+  - Wait for the installation to finish. Akmmod will build the driver for the current kernel.
+    - `while true; do sudo ps aux |grep akmods |grep -v grep; sleep 1; echo '#####'; done` until the process is finished.
+  - Restart the system
+  - Once the driver is installed and after the reboot, this command should not output anything: `lsmod |grep nouveau`
 - `$HOME/dotfiles/setup.sh install_packages`
 - `$HOME/dotfiles/setup.sh upgrade_system`
-- `$HOME/dotfiles/setup.sh setup`
 - `$HOME/dotfiles/setup.sh install`
+- `$HOME/dotfiles/setup.sh setup`
 
-Node: The `setup.sh` script is unable to enable the `gnome-extensions` in a single run. To enable the extensions, run the following command:
+Node: The `setup.sh` script can't enable `gnome-extensions` in a single run. To enable the extensions, run the following command:
 
 ```bash
 $HOME/dotfiles/setup.sh install_gnome_extensions
@@ -78,7 +71,9 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
 
 - Open 1Password and sign in
 - Open 1Password
-- Click `...` on left top side
+- Select "Unlock using system authentication"
+- Click `Continue`
+- Click `...` on the top left side
 - Select `Settings`
 - Select `Developer`
 - Mark `Set up the SSH Agent`
@@ -87,7 +82,7 @@ $HOME/dotfiles/setup.sh install_gnome_extensions
 - Close the window
 - Open a terminal
 - `op signin`
-- Click `Authorize`
+- Click `Authorise`
 
 ## MacOS
 
