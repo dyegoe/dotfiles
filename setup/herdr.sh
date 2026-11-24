@@ -5,7 +5,7 @@ function setup_herdr() {
   skip_on_darwin "$OS detected, herdr is Linux-only for now, skipping..." && return
 
   link_config "$SCRIPT_DIR/herdr/config.toml" "$XDG_CONFIG_HOME/herdr/config.toml" "herdr config.toml"
-  log_info "  setup done..."
+  log_sub "setup done..."
 
   gen_zsh_completion herdr
 }
@@ -20,7 +20,7 @@ function install_herdr() {
   local local_version=$(command -v herdr &>/dev/null && herdr --version | awk '{print $NF}' || echo "0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/herdrdev/herdr/releases/download/$remote_version/herdr-${OS}-${ARCHM}" herdr bin
@@ -50,10 +50,10 @@ function install_herdr_plugins() {
   for entry in "${herdr_plugins[@]}"; do
     read -r repo plugin_id <<<"$entry"
     if herdr plugin list --plugin "$plugin_id" --json | grep -q "\"plugin_id\":\"$plugin_id\""; then
-      log_info "  $plugin_id is installed, updating..."
+      log_sub "$plugin_id is installed, updating..."
       run herdr plugin update --yes "$plugin_id"
     else
-      log_info "  installing $plugin_id from $repo..."
+      log_sub "installing $plugin_id from $repo..."
       run herdr plugin install --yes "$repo"
     fi
   done

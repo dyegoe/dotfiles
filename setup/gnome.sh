@@ -5,24 +5,24 @@ function setup_gnome_settings() {
   skip_on_darwin "$OS doesn't need further Gnome setup... Gnome settings setup skipped..." && return
 
   # dconf requires a D-Bus session; running this over SSH/tty is benign, not fatal.
-  log_info "  Setting up Gnome custom keybindings..."
+  log_sub "Setting up Gnome custom keybindings..."
   run dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']" || true
   run dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name "'Open Terminal'" || true
   run dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding "'<Control><Alt>t'" || true
   run dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command "'alacritty'" || true
 
-  log_info "  Setting up Gnome energy settings..."
+  log_sub "Setting up Gnome energy settings..."
   run dconf write /org/gnome/settings-daemon/plugins/power/power-button-action "'interactive'" || true
   run dconf write /org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type "'nothing'" || true
 
-  log_info "  Setting up Gnome interface settings..."
+  log_sub "Setting up Gnome interface settings..."
   run dconf write /org/gnome/desktop/interface/clock-show-date true || true
   run dconf write /org/gnome/desktop/interface/clock-show-seconds true || true
   run dconf write /org/gnome/desktop/interface/clock-show-weekday true || true
   run dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'" || true
   run dconf write /org/gnome/desktop/interface/toolbar-icons-size "'small'" || true
 
-  log_info "  Setting up Gnome favorite apps..."
+  log_sub "Setting up Gnome favorite apps..."
   run dconf write /org/gnome/shell/favorite-apps "['google-chrome.desktop', 'org.mozilla.firefox.desktop', 'org.gnome.Nautilus.desktop', 'Alacritty.desktop', 'code.desktop', 'antigravity.desktop', 'slack.desktop', '1password.desktop']" || true
 }
 
@@ -40,7 +40,7 @@ function install_gnome_extensions() {
 
   local gnome_extension_id
   for gnome_extension_id in "${gnome_extensions[@]}"; do
-    log_info "  installing $gnome_extension_id..."
+    log_sub "installing $gnome_extension_id..."
     (
       local tmp
       tmp=$(mktemp -d)
@@ -54,6 +54,6 @@ function install_gnome_extensions() {
         run gnome-extensions enable "$gnome_extension_id" || true
       fi
     )
-    log_info "  $gnome_extension_id installed..."
+    log_sub "$gnome_extension_id installed..."
   done
 }

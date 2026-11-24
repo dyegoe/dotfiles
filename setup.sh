@@ -43,18 +43,18 @@ function upgrade_system() {
 function install_nvidia() {
   log_info "Setup NVIDIA..."
   if [[ "$OS" != "linux" || "$DISTRO" != "fedora" ]]; then
-    log_info "  $OS/$DISTRO doesn't support NVIDIA setup... skipped..."
+    log_sub "$OS/$DISTRO doesn't support NVIDIA setup... skipped..."
     return
   fi
 
   if [[ -f ~/.nonvidia ]]; then
-    log_info "  ~/.nonvidia exists, skipping NVIDIA setup..."
+    log_sub "found ~/.nonvidia, skipping NVIDIA setup..."
     return
   fi
 
-  log_info "  Installing NVIDIA drivers..."
+  log_sub "Installing NVIDIA drivers..."
   run sudo dnf install -y akmod-nvidia xorg-x11-drv-nvidia-cuda libva-utils vdpauinfo
-  log_info "  NVIDIA drivers installed successfully."
+  log_sub "NVIDIA drivers installed successfully."
 }
 
 # ##### Install packages #####
@@ -63,13 +63,13 @@ function install_packages() {
   # darwin
   if [[ "$OS" == "darwin" ]]; then
     if ! command -v brew &>/dev/null; then
-      log_info "  Install Homebrew..."
+      log_sub "Install Homebrew..."
       run /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       unset NONINTERACTIVE
       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     # because darwin already has zsh, we don't install it
-    log_info "  Installing packages using brew..."
+    log_sub "Installing packages using brew..."
     run brew install \
       fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen \
       grep gawk gnu-sed coreutils \
@@ -81,16 +81,16 @@ function install_packages() {
   # fedora
   if [[ "$DISTRO" == "fedora" ]]; then
     if [[ ! -f /etc/yum.repos.d/vscode.repo ]]; then
-      log_info "  Import Visual Studio Code repository..."
+      log_sub "Import Visual Studio Code repository..."
       run sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
       run sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
     fi
     if ! command -v 1password &>/dev/null; then
-      log_info "  Installing 1Password rpm for first time..."
+      log_sub "Installing 1Password rpm for first time..."
       run sudo rpm -ivh "https://downloads.1password.com/linux/rpm/stable/x86_64/1password-latest.rpm"
     fi
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
-    log_info "  Installing packages using dnf..."
+    log_sub "Installing packages using dnf..."
     run sudo dnf --setopt=install_weak_deps=False -y install \
       zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty age \
       google-chrome-stable code 1password 1password-cli \

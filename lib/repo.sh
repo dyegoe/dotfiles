@@ -8,12 +8,12 @@ function clone_or_pull() {
   local dir=$2
 
   if [[ -d "$dir" ]]; then
-    log_info "  updating $(basename "$dir")..."
+    log_sub "updating $(basename "$dir")..."
     run git -C "$dir" pull
   else
-    log_info "  installing $(basename "$dir")..."
+    log_sub "installing $(basename "$dir")..."
     run mkdir -p "$(dirname "$dir")"
     run git clone "$url" "$dir"
   fi
-  log_info "  done..."
+  log_sub "done..."
 }

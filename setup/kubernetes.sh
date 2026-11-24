@@ -37,7 +37,7 @@ function install_kubectl() {
   local local_version=$(command -v kubectl &>/dev/null && kubectl version --client --output json | jq -r '.clientVersion.gitVersion' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://dl.k8s.io/release/$remote_version/bin/$OS/$ARCH/kubectl" kubectl bin
@@ -49,7 +49,7 @@ function install_netshoot() {
   local local_version=$(command -v kubectl-netshoot &>/dev/null && kubectl-netshoot version | awk '{print $2}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/nilic/kubectl-netshoot/releases/download/$remote_version/kubectl-netshoot_${remote_version}_${OS}_${ARCH}.tar.gz" kubectl-netshoot tar.gz
@@ -61,7 +61,7 @@ function install_helm() {
   local local_version=$(command -v helm &>/dev/null && helm version --template '{{.Version}}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://get.helm.sh/helm-$remote_version-$OS-$ARCH.tar.gz" helm tar.gz "$OS-$ARCH/helm"
@@ -73,7 +73,7 @@ function install_kubectx() {
   local local_version=v$(command -v kubectx &>/dev/null && kubectx -V || echo "0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/ahmetb/kubectx/releases/download/$remote_version/kubectx_${remote_version}_${OS}_${ARCHM}.tar.gz" kubectx tar.gz
@@ -85,7 +85,7 @@ function install_k9s() {
   local local_version=$(command -v k9s &>/dev/null && k9s version --short | grep Version | awk '{print $2}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/derailed/k9s/releases/download/$remote_version/k9s_${OSS}_${ARCH}.tar.gz" k9s tar.gz
@@ -98,7 +98,7 @@ function install_sofka() {
   local local_version=$(command -v sofka &>/dev/null && sofka --version | awk '/^sofka /{print $2}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
 
@@ -125,7 +125,7 @@ function install_kubeseal() {
   local local_version=$(command -v kubeseal &>/dev/null && kubeseal --version | awk '{print $3}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/bitnami-labs/sealed-secrets/releases/download/$remote_version/kubeseal-${remote_version#v}-$OS-$ARCH.tar.gz" kubeseal tar.gz
@@ -137,7 +137,7 @@ function install_kubelogin() {
   local local_version=$(command -v kubectl-oidc_login &>/dev/null && kubectl-oidc_login --version | awk '{print $3}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   # Installed under the kubectl plugin name so `kubectl oidc-login` works.

@@ -8,7 +8,7 @@ function install_eza() {
   local local_version=$(command -v eza &>/dev/null && eza --version | grep -oP '^v[0-9]+\.[0-9]+\.[0-9]+' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/eza-community/eza/releases/download/$remote_version/eza_${ARCHM}-unknown-${OS}-gnu.tar.gz" eza tar.gz

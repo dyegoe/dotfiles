@@ -3,7 +3,7 @@ setup_commands+=(setup_tmux)
 function setup_tmux() {
   log_info "Setup Tmux..."
   link_config "$SCRIPT_DIR/tmux/tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf" "tmux.conf"
-  log_info "  setup done..."
+  log_sub "setup done..."
 }
 
 # ##### Install Tmux plugins #####
@@ -17,8 +17,8 @@ function install_tmux_plugins() {
   clone_or_pull https://github.com/tmux-plugins/tpm.git "$tmux_plugins_tpm_dir"
 
   if ((!already_installed)); then
-    log_info "  tmux plugins..."
+    log_sub "tmux plugins..."
     run "$tmux_plugins_tpm_dir/bin/install_plugins"
-    log_info "  done..."
+    log_sub "done..."
   fi
 }

@@ -6,7 +6,7 @@ function setup_zsh() {
   link_config "$SCRIPT_DIR/zsh/zprofile" "$ZDOTDIR/.zprofile" ".zprofile"
   link_config "$SCRIPT_DIR/zsh/zshrc" "$ZDOTDIR/.zshrc" ".zshrc"
   link_config "$SCRIPT_DIR/zsh/aliases.zsh" "$ZDOTDIR/aliases.zsh" "aliases.zsh"
-  log_info "  setup done..."
+  log_sub "setup done..."
 }
 
 # ##### Install ZSH plugins #####

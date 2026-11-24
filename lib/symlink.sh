@@ -14,7 +14,7 @@ function link_config() {
   run mkdir -p "$(dirname "$target")"
 
   if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$origin" ]]; then
-    log_info "  $display_name already linked..."
+    log_sub "$display_name already linked..."
     return 0
   fi
 
@@ -24,11 +24,11 @@ function link_config() {
   fi
 
   if [[ -f "$target" ]] && [[ ! -L "$target" ]]; then
-    log_info "  $display_name already exists. It is a file, moving it to backup..."
+    log_sub "$display_name already exists. It is a file, moving it to backup..."
     run cp -p "$target" "${target}.$(date +%Y%m%d%H%M%S).backup"
   fi
 
-  log_info "  creating the symlink for $display_name..."
+  log_sub "creating the symlink for $display_name..."
   local tmp_link="${target}.tmp.$$"
   run ln -sf "$origin" "$tmp_link"
   if [[ "$OS" == "darwin" ]]; then

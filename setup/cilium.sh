@@ -12,7 +12,7 @@ function install_cilium() {
   local local_version=$(command -v cilium &>/dev/null && cilium version --client | grep cli | awk '{print $2}' || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/cilium/cilium-cli/releases/download/$remote_version/cilium-$OS-$ARCH.tar.gz" cilium tar.gz
@@ -32,7 +32,7 @@ function install_cilium_hubble() {
   local local_version=$(command -v hubble &>/dev/null && hubble version | grep hubble | awk '{print $2}' | cut -d@ -f1 || echo "v0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/cilium/hubble/releases/download/$remote_version/hubble-$OS-$ARCH.tar.gz" hubble tar.gz

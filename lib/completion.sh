@@ -13,5 +13,5 @@ function gen_zsh_completion() {
   run mkdir -p "$ZDOTDIR/functions"
   run_write "$ZDOTDIR/functions/_$completion_name" "$cmd" completion zsh
   run chmod 755 "$ZDOTDIR/functions/_$completion_name"
-  log_info "  setup done..."
+  log_sub "setup done..."
 }

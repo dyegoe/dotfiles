@@ -34,7 +34,7 @@ install_commands+=(install_foo)
 `setup()` and `install()` iterate those arrays and invoke each function directly (no `eval`). This means **adding a new tool = adding a new `setup/<tool>.sh` file** — nothing else needs to be touched to wire it into `full`/`setup`/`install`. Function/file naming convention: `setup_<tool>` for idempotent config/symlink work, `install_<tool>` for downloading/updating a binary or plugin. A file can define one, the other, or both (see `setup/tmux.sh`, `setup/vim.sh`, `setup/talos.sh` for both).
 
 **`lib/*.sh` holds the shared helpers** — use these instead of hand-rolling the patterns below:
-- `lib/log.sh` — `log_info` / `log_error` / `log_warn` / `log_dry`.
+- `lib/log.sh` — `log_info` (top-level step, `==>`) / `log_sub` (indented sub-step under it, `  •`) / `log_warn` / `log_error` (both to stderr) / `log_dry` (indented `DRY:`, emitted by `run`/`run_write`). Use `log_sub "..."` for sub-steps rather than indenting a `log_info` message by hand.
 - `lib/run.sh` — `run <cmd...>` wraps every mutating command so `--dry-run` can preview it; `run_write <file> <cmd...>` does the same for `cmd > file`; `skip_on_darwin "<message>"` is the `if [[ "$OS" == "darwin" ]]; then ...; return; fi` guard as a one-liner (`skip_on_darwin "..." && return`).
 - `lib/symlink.sh` — `link_config <origin> <target> [display_name]` is the symlink-with-backup pattern (see `setup/git.sh`, `setup/tmux.sh`, `setup/vim.sh` for callers). Idempotent, atomic (temp-link + rename), backs up a real file at `<target>` by copy before replacing it.
 - `lib/completion.sh` — `gen_zsh_completion <command> [completion_name]` generates `$ZDOTDIR/functions/_<completion_name>` via `<command> completion zsh`, no-op if the command isn't installed (see `setup/talos.sh`, `setup/cilium.sh`).
@@ -54,7 +54,7 @@ install_commands+=(install_foo)
 
 ## Conventions to preserve
 
-- Every log line goes through `log_info` / `log_error` / `log_warn` / `log_dry` (`lib/log.sh`) — don't use raw `echo`/`printf` for status output in `setup/*.sh` or `lib/*.sh`.
+- Every log line goes through `log_info` / `log_sub` / `log_error` / `log_warn` / `log_dry` (`lib/log.sh`) — don't use raw `echo`/`printf` for status output in `setup/*.sh` or `lib/*.sh`.
 - Every mutating command goes through `run` (or `run_write` for redirects) so `--dry-run` stays trustworthy — don't call `ln`, `mv`, `rm`, `mkdir`, `curl -o`, `tar`, `git clone`, `sudo`, `dnf`, `brew`, or `dconf` directly in `setup/*.sh`. Read-only probes (`command -v`, `--version`, GitHub API reads) are called directly.
 - `setup.sh` runs with `set -euo pipefail`; individual `setup/*.sh` functions rely on early `return` (not `exit`) for OS short-circuits, since they're sourced into the same shell. Because of `-u`, don't reference `$1`/`$2`/`$3` (etc.) in a function without a default (`${3:-}`) unless the function's contract guarantees they're set. Because of `local x=$(cmd)`, keep declaration and assignment on one line (`local x=$(cmd)`, not `local x; x=$(cmd)`) when `cmd` failing should be non-fatal — splitting them turns a masked failure into a hard abort under `-e`.
 - Idempotency matters: `full` and `install`/`setup` are meant to be safe to rerun on an already-provisioned machine (version checks before installing, symlink checks before linking, `git pull` on already-cloned plugin repos).

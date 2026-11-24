@@ -5,7 +5,7 @@ function setup_vim() {
   run mkdir -p "$VIM_HOME/undo"
 
   link_config "$SCRIPT_DIR/vim/vimrc" "$VIM_HOME/vimrc" ".vimrc"
-  log_info "  setup done..."
+  log_sub "setup done..."
 }
 
 # ##### Install vim plugins #####

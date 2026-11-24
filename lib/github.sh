@@ -39,7 +39,7 @@ function install_release() {
   local kind=$3
   local bin_source=${4:-$bin_name}
 
-  log_info "  installing..."
+  log_sub "installing..."
   (
     local tmp
     tmp=$(mktemp -d)
@@ -68,7 +68,7 @@ function install_release() {
     run chmod 750 "$tmp/$bin_source"
     run mv -f "$tmp/$bin_source" "$LOCAL_BIN/$bin_name"
   )
-  log_info "  installed..."
+  log_sub "installed..."
 }
 
 # install_release_tree <download_url> <tar.gz|zip>
@@ -80,7 +80,7 @@ function install_release_tree() {
   local url=$1
   local kind=$2
 
-  log_info "  installing..."
+  log_sub "installing..."
   (
     local tmp
     tmp=$(mktemp -d)
@@ -116,5 +116,5 @@ function install_release_tree() {
       done < <(find "$tmp" -type f "${perm_test[@]}" -print0)
     fi
   )
-  log_info "  installed..."
+  log_sub "installed..."
 }

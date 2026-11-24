@@ -6,11 +6,11 @@ function install_golang() {
   local local_version=$(command -v go &>/dev/null && go version | awk '{print $3}' || echo "0.0.0")
 
   if [[ "$remote_version" == "$local_version" ]]; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
 
-  log_info "  installing..."
+  log_sub "installing..."
   (
     local tmp
     tmp=$(mktemp -d)
@@ -35,5 +35,5 @@ function install_golang() {
       sudo rm -rf /usr/local/go.old
     fi
   )
-  log_info "  installed..."
+  log_sub "installed..."
 }

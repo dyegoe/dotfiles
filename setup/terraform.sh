@@ -18,7 +18,7 @@ function install_tenv() {
   local local_version=$(command -v tenv &>/dev/null && tenv version | awk '{print $3}' || echo "0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release_tree "https://github.com/tofuutils/tenv/releases/download/$remote_version/tenv_${remote_version}_${OSS}_${ARCHM}.tar.gz" tar.gz
@@ -31,7 +31,7 @@ function install_terraform_docs() {
   [[ "$OS" == "darwin" ]] && remote_version="v0.21.0"
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/terraform-docs/terraform-docs/releases/download/$remote_version/terraform-docs-$remote_version-$OS-$ARCH.tar.gz" terraform-docs tar.gz
@@ -43,7 +43,7 @@ function install_tflint() {
   local local_version=v$(command -v tflint &>/dev/null && tflint -v | grep version | awk '{print $3}' || echo "0.0.0")
 
   if version_is_current "$remote_version" "$local_version"; then
-    log_info "  is up to date..."
+    log_sub "is up to date..."
     return
   fi
   install_release "https://github.com/terraform-linters/tflint/releases/download/$remote_version/tflint_${OS}_${ARCH}.zip" tflint zip

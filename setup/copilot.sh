@@ -6,7 +6,7 @@ function install_copilot() {
   # that would otherwise make the CLI look installed on any machine with `code`.
   local bin=$(command -v copilot || true)
   if [[ -n "$bin" && "$(readlink -f "$bin")" != */copilot-shim/* ]]; then
-    log_info "  already installed, skipping..."
+    log_sub "already installed, skipping..."
     return
   fi
   # Quoted so --dry-run neither downloads nor executes the installer.

@@ -35,6 +35,6 @@ function run_write() {
 #   skip_on_darwin "reason..." && return
 function skip_on_darwin() {
   [[ "$OS" == "darwin" ]] || return 1
-  log_info "  $1"
+  log_sub "$1"
   return 0
 }

@@ -7,5 +7,5 @@ function setup_1password() {
   local autostart_path="$XDG_CONFIG_HOME/autostart"
   run mkdir -p "$autostart_path"
   run cp "$SCRIPT_DIR/1password/1password.desktop" "$autostart_path/."
-  log_info "  setup done..."
+  log_sub "setup done..."
 }

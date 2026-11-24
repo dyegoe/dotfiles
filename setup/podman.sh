@@ -5,5 +5,5 @@ function setup_podman_docker() {
   skip_on_darwin "$OS doesn't need further Podman setup... Podman setup skipped..." && return
   run sudo mkdir -p /etc/containers
   run sudo touch /etc/containers/nodocker
-  log_info "  setup done..."
+  log_sub "setup done..."
 }
