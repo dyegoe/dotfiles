@@ -1,4 +1,5 @@
 # ##### Install golang #####
+echo $GOROOT
 install_commands+=(install_golang)
 function install_golang() {
   log_info "Install golang..."
@@ -25,7 +26,7 @@ function install_golang() {
     if ((DRY_RUN)); then
       log_dry "verify $tmp/extracted/go/bin/go, then swap into /usr/local/go"
     else
-      "$tmp/extracted/go/bin/go" version >/dev/null
+      GOROOT=$tmp/extracted/go "$tmp/extracted/go/bin/go" version >/dev/null
 
       sudo rm -rf /usr/local/go.new
       sudo mv "$tmp/extracted/go" /usr/local/go.new

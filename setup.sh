@@ -87,6 +87,7 @@ function install_packages() {
     fi
     if ! command -v 1password &>/dev/null; then
       log_sub "Installing 1Password rpm for first time..."
+      sudo rpm --import https://downloads.1password.com/linux/keys/1password.asc
       run sudo rpm -ivh "https://downloads.1password.com/linux/rpm/stable/x86_64/1password-latest.rpm"
     fi
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
