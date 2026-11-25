@@ -533,6 +533,7 @@ herdr_workspaces=(
   "awss $HOME/git/github.com/dyegoe/awss"
   "homelab $HOME/git/github.com/dyegoe/homelab"
   "dotfiles $HOME/dotfiles"
+  "dotfiles-private $HOME/git/github.com/dyegoe/dotfiles-private"
 )
 alias hns='herdr_new_session'
 function herdr_new_session() {
