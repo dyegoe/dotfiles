@@ -1,5 +1,4 @@
 # ##### Install golang #####
-echo $GOROOT
 install_commands+=(install_golang)
 function install_golang() {
   log_info "Install golang..."
