@@ -4,6 +4,9 @@
 function log_info() {
   printf "\e[33m\e[1m[INFO]\e[0m\e[34m $1\e[0m\n"
 }
+function log_warn() {
+  printf "\e[33m\e[1m[WARN]\e[0m\e[33m $1\e[0m\n" >&2
+}
 function log_error() {
   printf "\e[31m\e[1m[ERROR]\e[0m\e[33m $1\e[0m\n"
 }
@@ -525,41 +528,65 @@ function python_venv() {
 alias k='kubectl'
 
 # ##### herdr #####
-# Workspaces created by herdr_new_session, in sidebar order: "<label> <directory>".
-# Machine-local entries (e.g. work repos) belong in $ZDOTDIR/work.zsh, which is
-# sourced after this file and can extend the array: herdr_workspaces+=("label dir").
-herdr_workspaces=(
-  "home $HOME"
+# One herdr session per `herdr_ws_<session>` array, each entry "<label> <directory>"
+# in sidebar order: `hns dyegoe` builds the session from $herdr_ws_dyegoe. Add a
+# session by defining another array. Machine-local sessions (e.g. work repos)
+# belong in $ZDOTDIR/work.zsh, which is sourced after this file.
+herdr_ws_dyegoe=(
   "awss $HOME/git/github.com/dyegoe/awss"
   "homelab $HOME/git/github.com/dyegoe/homelab"
   "dotfiles $HOME/dotfiles"
   "dotfiles-private $HOME/git/github.com/dyegoe/dotfiles-private"
 )
+# Session names that have a workspace list, from the herdr_ws_* arrays.
+function _herdr_sessions() {
+  print -l ${(o)${(k)parameters[(I)herdr_ws_*]}#herdr_ws_}
+}
+function _herdr_new_session() {
+  _arguments \
+    '(-d --direction)'{-d,--direction}'[split direction]:direction:(down right)' \
+    '(-r --ratio)'{-r,--ratio}'[share of the first pane]:ratio:' \
+    '--no-attach[only build the session]' \
+    '(-h --help)'{-h,--help}'[show help]' \
+    '1:session:($(_herdr_sessions))'
+}
+(( $+functions[compdef] )) && compdef _herdr_new_session herdr_new_session
 alias hns='herdr_new_session'
 function herdr_new_session() {
-  local session=work direction=down ratio=0.7 attach=1
+  local session= direction=down ratio=0.7 attach=1
   while (( $# )); do
     case "$1" in
       -d|--direction) direction=${2:-}; shift ;;
       -r|--ratio) ratio=${2:-}; shift ;;
       --no-attach) attach=0 ;;
       -h|--help|help)
-        printf "Usage: hns [-d|--direction down|right] [-r|--ratio 0.7] [--no-attach] [session]\n"
+        printf "Usage: hns [-d|--direction down|right] [-r|--ratio 0.7] [--no-attach] <session>\n"
         printf "\n"
-        printf "Creates (or completes) a named herdr session with one workspace per entry in\n"
-        printf "\$herdr_workspaces, each split into 2 panes in the workspace's directory.\n"
+        printf "Creates (or completes) the herdr session <session> with one workspace per entry in\n"
+        printf "\$herdr_ws_<session>, each split into 2 panes in the workspace's directory.\n"
         printf "Workspaces whose label already exists in the session are left untouched, so it is safe to rerun.\n"
         printf "\n"
-        printf "  -d, --direction  split direction, defaults to down (top/bottom, like the current home workspace)\n"
+        printf "  -d, --direction  split direction, defaults to down (top/bottom)\n"
         printf "  -r, --ratio      share of the first pane, defaults to 0.7\n"
         printf "  --no-attach      only build the session, don't attach to it\n"
-        printf "  session          session name, defaults to 'work' (the default session is never touched)\n"
+        printf "  session          one of: %s\n" "${(j:, :)${(f)$(_herdr_sessions)}}"
         return 0
         ;;
+      -*) log_error "Unknown option '$1', see: hns --help"; return 1 ;;
       *) session=$1 ;;
     esac
     shift
   done
+  local -a sessions=(${(f)"$(_herdr_sessions)"})
+  if [[ -z "$session" ]]; then
+    log_info "Sessions: ${(j:, :)sessions}  (usage: hns <session>, see hns --help)"
+    return 0
+  fi
+  if (( ! ${sessions[(Ie)$session]} )); then
+    log_error "No workspace list for session '$session' (define herdr_ws_$session); known: ${(j:, :)sessions}"
+    return 1
+  fi
+  local -a workspaces=("${(@P)${:-herdr_ws_$session}}")
   if [[ "$direction" != (down|right) ]]; then
     log_error "Invalid direction '$direction', use down or right"
     return 1
@@ -589,10 +616,18 @@ function herdr_new_session() {
   fi
 
   local -a existing=(${(f)"$($hd workspace list | jq -r '.result.workspaces[].label')"})
+  local -A seen=()
   local entry label dir created pane
-  for entry in "${herdr_workspaces[@]}"; do
+  for entry in "${workspaces[@]}"; do
     label=${entry%% *}
     dir=${entry#* }
+    # Labels key the skip-if-exists check, so a repeated label (e.g. two repos
+    # with the same folder name) would silently alias the first workspace.
+    if [[ -n "${seen[$label]:-}" ]]; then
+      log_warn "Label $label used by both ${seen[$label]} and $dir, skipping the latter"
+      continue
+    fi
+    seen[$label]=$dir
     if (( ${existing[(Ie)$label]} )); then
       log_info "Workspace $label already exists, skipping"
       continue
