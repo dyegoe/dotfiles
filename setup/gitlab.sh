@@ -1,3 +1,10 @@
+# ##### Setup glab #####
+setup_commands+=(setup_glab)
+function setup_glab() {
+  # glab's completion subcommand takes the shell via -s, not positionally.
+  gen_zsh_completion glab glab completion -s zsh
+}
+
 # ##### Install glab #####
 install_commands+=(install_glab)
 function install_glab() {
