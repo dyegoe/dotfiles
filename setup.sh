@@ -73,7 +73,7 @@ function install_packages() {
     run brew install \
       fd bat fzf eza zoxide ripgrep jq yq tmux xclip xsel vim pwgen \
       grep gawk gnu-sed coreutils \
-      ansible ansible-lint pre-commit uv
+      ansible ansible-lint pre-commit uv gh
     run sudo softwareupdate --agree-to-license --install-rosetta || true
     return
   fi
@@ -93,7 +93,7 @@ function install_packages() {
     # because fzf is quite outdated in Fedora repos, we install it manually: `install_fzf`
     log_sub "Installing packages using dnf..."
     run sudo dnf --setopt=install_weak_deps=False -y install \
-      zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty age \
+      zsh fd-find bat zoxide ripgrep jq yq tmux xclip xsel vim pwgen alacritty age gh \
       google-chrome-stable code 1password 1password-cli \
       podman-docker podman-compose docker-compose \
       pre-commit ansible python3-ansible-lint uv @virtualization
