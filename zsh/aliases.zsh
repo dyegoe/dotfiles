@@ -533,6 +533,7 @@ alias k='kubectl'
 # session by defining another array. Machine-local sessions (e.g. work repos)
 # belong in $ZDOTDIR/work.zsh, which is sourced after this file.
 herdr_ws_dyegoe=(
+  "home $HOME"
   "awss $HOME/git/github.com/dyegoe/awss"
   "homelab $HOME/git/github.com/dyegoe/homelab"
   "dotfiles $HOME/dotfiles"
